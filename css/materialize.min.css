@@ -5373,6 +5373,7 @@ nav .brand-logo {
     padding: 0;
     white-space: nowrap;
     left: 50%;
+    top: 18px;
     transform: translateX(-50%)
 }
 nav .brand-logo.center {
@@ -6335,9 +6336,9 @@ button.btn-floating {
     0.7)
 }
 .waves-effect.waves-teal .waves-ripple {
-    background-color:rgba(0,
-    150,
-    136,
+    background-color:rgba(99,
+    179,
+    71,
     0.7)
 }
 .waves-notransition {

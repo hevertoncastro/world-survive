@@ -16,7 +16,7 @@ p {
 }
 
 .button-collapse {
-  color: #26a69a;
+  color: #63B347;
 }
 
 .parallax-container {
@@ -25,9 +25,6 @@ p {
   height: auto;
   color: rgba(255,255,255,.9);
 }
-  .parallax-container .section {
-    width: 100%;
-  }
 
 @media only screen and (max-width : 992px) {
   .parallax-container .section {
@@ -54,4 +51,17 @@ p {
 
 footer.page-footer {
   margin: 0;
+}
+
+.parallax-container .section {
+width: 100%;
+}
+.form-login{
+    width: 100%;
+    max-width: 480px;
+    float: none;
+    margin: 15px auto;
+}
+h4.header {
+    margin:5.14rem 0 0.912rem 0
 }
