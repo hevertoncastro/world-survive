@@ -60,8 +60,25 @@ width: 100%;
     width: 100%;
     max-width: 480px;
     float: none;
-    margin: 15px auto;
+    margin: 20px auto;
 }
 h4.header {
-    margin:5.14rem 0 0.912rem 0
+    margin:5.14rem 0 0.912rem 0;
+}
+
+h2.form-title{
+  font-size: 2em;
+  margin: 1rem 1.1rem;
+  color: #5CB051;
+}
+
+h2.form-title.coleta{
+  margin: 1rem 1.1rem 3rem 1.1rem;
+}
+
+.select-label{
+  top: -28px !important;
+}
+.datapicker-label{
+  top: -15px !important;
 }
