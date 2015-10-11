@@ -1,3 +1,19 @@
+<?php
+//INCLUI CLASSES
+require_once('include/security.inc.php');
+require_once('include/conection.inc.php');
+require_once('class/MySQL.class.php');
+require_once('class/LogVO.php');
+require_once('class/log.class.php');
+require_once('include/antiSQLInjection.php');
+require_once('include/getIp.php');
+
+//PEGA NOME DA PÁGINA ATUAL PARA REDIRECIONAMENTO
+$nomePagina = explode(".", basename($_SERVER['SCRIPT_NAME'])); $nomePagina = $nomePagina[0];
+
+$usuarioNome = $_SESSION["login_usuario"]["nome"];
+$usuarioId = $_SESSION["login_usuario"]["id"];
+?>
 <!doctype html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
@@ -31,13 +47,11 @@
         <div class="nav-wrapper container">
           <a id="logo-container" href="#" class="brand-logo"><img src="img/logo-world-survive.png" height="200" width="270" alt=""></a>
           <ul class="right hide-on-med-and-down">
-            <li><a href="index.html">Início</a></li>
-            <li><a href="contato.html">Contato</a></li>
+            <li><a href="logoff">Sair</a></li>
           </ul>
 
            <ul id="nav-mobile" class="side-nav">
-            <li><a href="index.html">Início</a></li>
-            <li><a href="contato.html">Contato</a></li>
+            <li><a href="logoff">Sair</a></li>
           </ul>
           <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
         </div>

@@ -29,17 +29,17 @@
         <![endif]-->
         <nav class="white" role="navigation">
         <div class="nav-wrapper container">
-          <a id="logo-container" href="#" class="brand-logo"><img src="img/logo-world-survive.png" height="200" width="270" alt=""></a>
+          <a id="logo-container" href="index" class="brand-logo"><img src="img/logo-world-survive.png" height="200" width="270" alt=""></a>
           <ul class="right hide-on-med-and-down">
-            <li><a href="login.html">Entrar</a></li>
-            <li><a href="new-account.html">Criar conta</a></li>
-            <li><a href="contato.html">Contato</a></li>
+            <li><a href="login">Entrar</a></li>
+            <li><a href="new-account">Criar conta</a></li>
+            <li><a href="contact">Contato</a></li>
           </ul>
 
            <ul id="nav-mobile" class="side-nav">
-            <li><a href="login.html">Entrar</a></li>
-            <li><a href="new-account.html">Criar conta</a></li>
-            <li><a href="contato.html">Contato</a></li>
+            <li><a href="login">Entrar</a></li>
+            <li><a href="new-account">Criar conta</a></li>
+            <li><a href="contact">Contato</a></li>
           </ul>
           <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
         </div>
@@ -54,7 +54,7 @@
               <h5 class="header col s12 light">Nós unimos seus resíduos com cooperativas perto de você!</h5>
             </div>
             <div class="row center">
-              <a href="login.html" id="download-button" class="btn-large waves-effect waves-light teal lighten-1">Solicitar coleta</a>
+              <a href="schedule" id="download-button" class="btn-large waves-effect waves-light teal lighten-1">Solicitar coleta</a>
             </div>
             <br><br>
 
@@ -72,7 +72,7 @@
             <div class="col s12 m4">
               <div class="icon-block">
                 <h2 class="center blue-text text-accent-3"><i class="material-icons">delete</i></h2>
-                <h5 class="center">Separe seu lixo reciclável</h5>
+                <h5 class="center">Separe seu resíduo</h5>
 
                 <p class="light">We did most of the heavy lifting for you to provide a default stylings that incorporate our custom components. Additionally, we refined animations and transitions to provide a smoother experience for developers.</p>
               </div>

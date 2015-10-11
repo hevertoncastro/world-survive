@@ -82,3 +82,42 @@ h2.form-title.coleta{
 .datapicker-label{
   top: -15px !important;
 }
+
+.response{
+  width: 100%;
+  height: auto;  
+  border-radius: 5px;
+  display: none;
+  
+}
+.response p{
+  position: relative;
+  text-align: center;
+  line-height: 1;
+  margin: 0px;
+  padding: 15px 5px;
+}
+.warning{
+  background: #FFFAED;  
+  border: 1px solid #FFE9AD;
+  color: #E36F6F;
+}
+.success{
+  background: #EEFFED;  
+  border: 1px solid #B3DEAC;
+  color: #6EB05F;
+}
+.error{
+  background: #FFE1E1;  
+  border: 1px solid #F78E8E;
+  color: #E44A4A;
+}
+.btn-login{
+  min-width: 120px;
+}
+.loader{
+  position: relative;
+  top: 8px;
+  display: none;
+}
+

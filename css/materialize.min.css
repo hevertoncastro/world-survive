@@ -6067,9 +6067,9 @@ footer.page-footer .footer-copyright {
 .btn-large:disabled,
 .btn-large:disabled,
 .btn-floating:disabled {
-    background-color:#DFDFDF !important;
+    background-color:#DEF1CC !important;
     box-shadow:none;
-    color:#9F9F9F !important;
+    color:#B1C8AD !important;
     cursor:default
 }
 .btn.disabled *,
@@ -8694,7 +8694,8 @@ select {
     background-color:#63B347;
     color:#fff;
     padding-bottom:15px;
-    font-weight:300
+    font-weight:300;
+    display: none;
 }
 .picker__nav--prev:hover,
 .picker__nav--next:hover {
@@ -8800,6 +8801,9 @@ button.picker__today:focus,
 button.picker__clear:focus,
 button.picker__close:focus {
     background-color:#a1ded8
+}
+button.picker__clear{
+	display: none;
 }
 .picker__list {
     list-style:none;
