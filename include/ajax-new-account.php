@@ -21,21 +21,12 @@ $pagina = basename($_SERVER['SCRIPT_NAME']);
 //PEGA DADOS POR POST
 $name = isset($_POST['name']) ? $_POST['name'] : NULL;
 $name = noInjection($name);
-$name = trim($name);
-$name = strip_tags($name);
-$name = addslashes($name);
 
 $email = isset($_POST['email']) ? $_POST['email'] : NULL;
 $email = noInjection($email);
-$email = trim($email);
-$email = strip_tags($email);
-$email = addslashes($email);
 
 $senha = isset($_POST['senha']) ? $_POST['senha'] : NULL;
 $senha = noInjection($senha);
-$senha = trim($senha);
-$senha = strip_tags($senha);
-$senha = addslashes($senha);
 
 if(empty($name) && empty($email) && empty($senha)){
 	echo "campos_vazios";

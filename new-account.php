@@ -120,7 +120,7 @@ $res = isset($_GET['res']) ? $_GET['res'] : NULL;
               </div>
 
               <span class="btn-login-text">CRIAR CONTA</span></a>
-              <a href="new-account.html" class="waves-effect waves-teal btn-flat btn-large">CANCELAR</a>
+              <a href="index" class="waves-effect waves-teal btn-flat btn-large">CANCELAR</a>
             </div>
           </form>
         </div>
@@ -153,7 +153,7 @@ $res = isset($_GET['res']) ? $_GET['res'] : NULL;
         (function ($) {
 
           //FOCUS EM USUÁRIO
-          $("#name").focus();
+          //$("#name").focus();
 
           //AVISOS
           $('.btn-send').click(function() {

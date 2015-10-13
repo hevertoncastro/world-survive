@@ -114,7 +114,7 @@ $res = isset($_GET['res']) ? $_GET['res'] : NULL;
               </div>
 
               <span class="btn-login-text">ENTRAR</span></a>
-              <a href="new-account.html" class="waves-effect waves-teal btn-flat btn-large">CRIAR CONTA</a>
+              <a href="new-account" class="waves-effect waves-teal btn-flat btn-large">CRIAR CONTA</a>
             </div>
           </form>
         </div>
@@ -165,8 +165,8 @@ $res = isset($_GET['res']) ? $_GET['res'] : NULL;
             $(".response").show("slow");
           }
 
-          //FOCUS EM USUÁRIO
-          $("#email").focus();
+          //FOCO EM EMAIL
+          //$("#email").focus();
 
           //AVISOS
           $('.btn-send').click(function() {

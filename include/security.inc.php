@@ -23,6 +23,6 @@ if(date('Y-m-d H:i:s') > date('Y-m-d H:i:s',$_SESSION["login_usuario"]["tempo"])
 	exit;
 } else {
 	//CASO NÃO SEJA, ATRIBUI MAIS 30 MINUTOS DA HORA ATUAL
-	$_SESSION["login_usuario"]["tempo"] = strtotime('+45 minutes',strtotime(date('Y-m-d H:i:s')));
+	$_SESSION["login_usuario"]["tempo"] = strtotime('+30minutes',strtotime(date('Y-m-d H:i:s')));
 }
 ?>

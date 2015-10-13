@@ -35,8 +35,6 @@ class Usuario extends UsuarioVO{
 		
 		$conexao = MySQL::getMySQL();
 		
-		$sql = "";
-		
 		$sql = "UPDATE usuarios SET ";
 		$sql .=  "usu_nome = '".$dados->getNome()."', ";
 		$sql .=  "usu_email = '".$dados->getEmail()."', ";
@@ -67,9 +65,7 @@ class Usuario extends UsuarioVO{
 	public function alterarMinhaConta(UsuarioVO $dados) {
 		
 		$conexao = MySQL::getMySQL();
-		
-		$sql = "";
-		
+
 		$sql = "UPDATE usuarios SET ";
 		$sql .=  "usu_nome = '".addslashes($dados->getNome())."',";
 		$sql .=  "usu_senha = '".md5(addslashes($dados->getSenha()))."'";
@@ -85,15 +81,39 @@ class Usuario extends UsuarioVO{
 		}
 		
 	}
+
+	public function alterarEndereco(UsuarioVO $dados) {
+		
+		$conexao = MySQL::getMySQL();
+		
+		$sql = "UPDATE usuarios SET ";
+		$sql .=  "usu_cep = '".$dados->getCep()."', ";
+		$sql .=  "usu_endereco = '".$dados->getEndereco()."', ";
+		$sql .=  "usu_numero = '".$dados->getNumero()."', ";
+		$sql .=  "usu_complemento = '".$dados->getComplemento()."', ";
+		$sql .=  "usu_bairro = '".$dados->getBairro()."', ";
+		$sql .=  "usu_cidade = '".$dados->getCidade()."', ";
+		$sql .=  "usu_estado = '".$dados->getEstado()."', ";
+		$sql .=  "usu_ativo = '".$dados->getAtivo()."'";
+		
+		$sql .= " WHERE usu_id = ".$dados->getUsuarioID();
+		
+		$retorno = $conexao->alterar($sql);
+		
+		if($retorno){			
+			return $this->consultarUsuario($dados->getUsuarioID());
+		}else{
+			return false;
+		}
+		
+	}
 	
 	public function excluirUsuario($id) {
 	
 		$conexao = MySQL::getMySQL(); 
 		
 		$oUsuario = $this->consultarUsuario($id);
-		
-		$sql = '';
-		
+
 		$sql = 'DELETE FROM usuarios WHERE usu_id = '.$id;
 		
 		$retorno = $conexao->excluir($sql);
@@ -144,9 +164,7 @@ class Usuario extends UsuarioVO{
 	public function carregarUsuarios($where, $order, $limit){
 		
 		$conexao = MySQL::getMySQL();
-		
-		$sql = '';
-		
+
 		$sql = "SELECT * FROM usuarios as usu WHERE 1=1";
 				
 		if($where != ''){
@@ -205,8 +223,6 @@ class Usuario extends UsuarioVO{
 		
 		$conexao = MySQL::getMySQL();
 		
-		$sql = "";
-		
 		$sql = "UPDATE usuarios SET usu_ativo = 's' WHERE usu_id = ".$id;
 
 		$retorno = $conexao->alterar($sql);
@@ -222,8 +238,6 @@ class Usuario extends UsuarioVO{
 	public function desativarUsuario($id) {
 		
 		$conexao = MySQL::getMySQL();
-		
-		$sql = "";
 		
 		$sql = "UPDATE usuarios SET usu_ativo = 'n' WHERE usu_id = ".$id;
 
