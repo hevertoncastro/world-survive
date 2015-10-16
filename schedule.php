@@ -312,6 +312,7 @@ if(isset($usuarioID) && !empty($usuarioID)){
 
                     } else if(data == "ok"){
 
+                      $("rect").attr("fill", "#FFF");
                       $(".loader").show();
                       $(".btn-login-text").hide();
 

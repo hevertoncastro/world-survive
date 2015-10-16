@@ -41,6 +41,8 @@ class ApiMaps{
 
 	}
 
+	//https://maps.googleapis.com/maps/api/directions/json?origin=EnderecodeOrgigem&destination=EnderecodeDestino&mode=driving
+
 	public function formatAddress($endereco, $numero, $cidade, $estado, $cep){
 
 		//cria string unica com endereço
@@ -67,69 +69,4 @@ class ApiMaps{
 	}
 }
 
-// ================ TESTES ================ //
-/*
-//INSTANCIA CLASSE
-$ApiMaps = new ApiMaps;
-
-//ENDEREÇO DO CLIENTE NO FORMATO DO BANCO
-$endereco = "Rua Manoel Jorge Correa";
-$numero = "40";
-$cidade = "São Paulo";
-$estado = "SP";
-$cep = "";
-
-//CONVERTE ENDEREÇO PRA STRING ÚNICA
-$enderecoFormatado = $ApiMaps->formatAddress($endereco, $numero, "$cidade", $estado, $cep);
-
-echo "Endereço do cliente formatado: <br>".$enderecoFormatado."<br><br>";
-
-//CHAMA FUNÇÃO QUE RETORNA LATITUDE E LONGITUDE
-$LatLng = $ApiMaps->getLatLng($enderecoFormatado);
-
-//ACESSA ARRAY COM LATITUDE E LONGITUDE
-echo "Latitude: ".$LatLng['lat'];
-echo "<br>";
-echo "Longitude: ".$LatLng['lng'];
-echo "<br><br>======================================<br><br>";
-
-//===============================================================//
-
-//ENDEREÇO DA COOPERATIVA NO FORMATO DO BANCO
-$cooEndereco = "Rua Peixoto Gomide";
-$cooNumero = "296";
-$cooCidade = "São Paulo";
-$cooEstado = "SP";
-$cooCep = "01.409-000";
-
-//CONVERTE ENDEREÇO PRA STRING ÚNICA
-$cooEnderecoFormatado = $ApiMaps->formatAddress($cooEndereco, $cooNumero, "$cooCidade", $cooEstado, $cooCep);
-
-echo "Endereço da cooperativa formatado: <br>".$cooEnderecoFormatado."<br><br>";
-
-//CHAMA FUNÇÃO QUE RETORNA LATITUDE E LONGITUDE
-$cooLatLng = $ApiMaps->getLatLng($cooEnderecoFormatado);
-
-//ACESSA ARRAY COM LATITUDE E LONGITUDE
-echo "Latitude: ".$cooLatLng['lat'];
-echo "<br>";
-echo "Longitude: ".$cooLatLng['lng'];
-echo "<br><br>======================================<br><br>";
-
-//===============================================================//
-
-
-//CONVERTE EM COORDENADAS OS DOIS ENDEREÇOS
-$coordenadasEndereco = $LatLng['lat'].",".$LatLng['lng'];
-$coordenadasCooEndereco = $cooLatLng['lat'].",".$cooLatLng['lng'];
-
-//CALCULA DISTANCIA E TEMPO ENTRE OS DOIS ENDEREÇOS
-$distanceEnderecos = $ApiMaps->getDistance($coordenadasEndereco, $coordenadasCooEndereco);
-
-
-//ACESSA ARRAY COM DISTÊNCIA E DURAÇÃO
-echo "Distância: ".$distanceEnderecos['distanceText']." (".$distanceEnderecos['distanceValue'].")";
-echo "<br>";
-echo "Duração: ".$distanceEnderecos['durationText']." (".$distanceEnderecos['durationValue'].")";
-*/
 ?>

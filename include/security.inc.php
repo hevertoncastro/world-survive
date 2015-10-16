@@ -18,7 +18,7 @@ if($_SESSION["login_usuario"]["ip"] != getIP()){
 }
 
 //VERIFICA SE O TEMPO SEM USO É MAIOR QUE O PERMITIDO AO LOGAR
-if(date('Y-m-d H:i:s') > date('Y-m-d H:i:s',$_SESSION["login_usuario"]["tempo"])){
+if(isset($_SESSION["login_usuario"]["tempo"]) && date('Y-m-d H:i:s') > date('Y-m-d H:i:s',$_SESSION["login_usuario"]["tempo"])){
 	header("Location: login?res=tempo_excedido");
 	exit;
 } else {

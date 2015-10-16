@@ -41,6 +41,8 @@ class ApiMaps{
 
 	}
 
+	//https://maps.googleapis.com/maps/api/directions/json?origin=EnderecodeOrgigem&destination=EnderecodeDestino&mode=driving
+
 	public function formatAddress($endereco, $numero, $cidade, $estado, $cep){
 
 		//cria string unica com endereço
@@ -67,8 +69,21 @@ class ApiMaps{
 	}
 }
 
-// ================ TESTES ================ //
-/*
+
+//https://maps.googleapis.com/maps/api/directions/json?origin=-21.0208301,-47.3740569&destination=Rua%20Peixoto%20Gomide,296&mode=driving
+
+?>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Classe de testes API Google Maps</title>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+<?php
+
 //INSTANCIA CLASSE
 $ApiMaps = new ApiMaps;
 
@@ -131,5 +146,7 @@ $distanceEnderecos = $ApiMaps->getDistance($coordenadasEndereco, $coordenadasCoo
 echo "Distância: ".$distanceEnderecos['distanceText']." (".$distanceEnderecos['distanceValue'].")";
 echo "<br>";
 echo "Duração: ".$distanceEnderecos['durationText']." (".$distanceEnderecos['durationValue'].")";
-*/
+
 ?>
+</body>
+</html>

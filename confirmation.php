@@ -2,14 +2,14 @@
 //INICIA SESSÃO
 @session_start();
 
-$_SESSION["login_usuario"]["id"] = "";
-$_SESSION["login_usuario"]["nome"] = "";
-$_SESSION["login_usuario"]["nivel"] = "";
-$_SESSION["login_usuario"]["tempo"] = "";
-$_SESSION["login_usuario"]["ip"] = "";
+// $_SESSION["login_usuario"]["id"] = "";
+// $_SESSION["login_usuario"]["nome"] = "";
+// $_SESSION["login_usuario"]["nivel"] = "";
+// $_SESSION["login_usuario"]["tempo"] = "";
+// $_SESSION["login_usuario"]["ip"] = "";
 
-//DESTRÓI SESSÃO
-session_destroy();
+// //DESTRÓI SESSÃO
+// session_destroy();
 
 //PEGA AÇÃO POR GET
 $res = isset($_GET['res']) ? $_GET['res'] : NULL;

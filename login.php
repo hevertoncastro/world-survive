@@ -217,6 +217,10 @@ $res = isset($_GET['res']) ? $_GET['res'] : NULL;
 
                   } else if(data == "ok"){
 
+                    $("rect").attr("fill", "#FFF");
+                    $(".loader").show();
+                    $(".btn-login-text").hide();
+
                     $(".response").removeClass("warning");
                     $(".response").addClass("success");
 

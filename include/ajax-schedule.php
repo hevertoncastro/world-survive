@@ -1,4 +1,36 @@
 <?php
+
+$cooperativas = array
+  (
+  array("id"=>"id123", "lat"=>"123", "lng"=>"456"),
+  array("id"=>"id123", "lat"=>"789", "lng"=>"012"),
+  array("id"=>"id123", "lat"=>"345", "lng"=>"678"),
+  array("id"=>"id123", "lat"=>"123", "lng"=>"456"),
+  array("id"=>"id123", "lat"=>"123", "lng"=>"456")
+  );
+
+$distancias = "";
+
+$cont = 0;
+
+foreach($cooperativas as $coo){
+
+	echo $cont;
+	echo "<br>";
+
+	print_r($coo);
+	echo $coo['lat'];
+	echo " / ";
+	echo $coo['lng'];
+	echo "<br>--------<br>";
+
+	$cont++;
+
+}
+
+exit;
+
+
 //INCLUI CONEXÃO COM O BD
 require_once('conection.inc.php');
 
@@ -8,6 +40,7 @@ require_once('../class/ColetaVO.php');
 require_once('../class/coleta.class.php');
 require_once('../class/UsuarioVO.php');
 require_once('../class/usuario.class.php');
+require_once('../class/mapsapi.class.php');
 require_once('../class/LogVO.php');
 require_once('../class/log.class.php');
 
@@ -34,27 +67,24 @@ foreach($_POST as $key => $value) {
 //VALIDAÇÕES
 if(empty($name) && empty($email) && empty($senha)){
 	echo "campos_vazios";
-	exit;	
+	exit;
 }
 if(empty($name)){
 	echo "nome_vazio";
-	exit;	
+	exit;
 }
 if(empty($email)){
 	echo "email_vazio";
-	exit;	
+	exit;
 }
 if(empty($senha)){
 	echo "senha_vazia";
-	exit;	
+	exit;
 }
 if(strlen($senha)<6){
 	echo "senha_curta";
-	exit;	
+	exit;
 }
-
-
-
 if($oColeta){
 	echo "usuario_existe";
 	exit;
@@ -62,22 +92,80 @@ if($oColeta){
 */
 
 //INSTANCIA A CLASSE
+$Usuario = new Usuario;
+$oUsuarioVO = new UsuarioVO;
+
+//SETA OS VALORES
+$oUsuarioVO->setUsuarioID($usuarioID);
+$oUsuarioVO->setCep($cep);
+$oUsuarioVO->setEndereco($endereco);
+$oUsuarioVO->setNumero($numero);
+$oUsuarioVO->setComplemento($complemento);
+$oUsuarioVO->setBairro($bairro);
+$oUsuarioVO->setCidade($cidade);
+$oUsuarioVO->setEstado($estado);
+
+//INSTANCIA CLASSE
+$ApiMaps = new ApiMaps;
+
+//CONVERTE ENDEREÇO PRA STRING ÚNICA
+$enderecoFormatado = $ApiMaps->formatAddress($endereco, $numero, "$cidade", $estado, $cep);
+
+//CHAMA FUNÇÃO QUE RETORNA LATITUDE E LONGITUDE
+$LatLng = $ApiMaps->getLatLng($enderecoFormatado);
+
+//ACESSA ARRAY COM LATITUDE E LONGITUDE
+$oUsuarioVO->setLatitude($LatLng['lat']);
+$oUsuarioVO->setLongitude($LatLng['lng']);
+
+$oUsuarioVO->setAtivo(1);
+
+//ATUALIZA ENDEREÇO
+$oUsuario = $Usuario->alterarEndereco($oUsuarioVO);
+
+
+// =========  CALCULAR COOPERATIVA MAIS PRÓXIMA ========= //
+
+$cooperativas = array
+  (
+  array("lat"=>"123","lng"=>"456"),
+  array("lat"=>"789","lng"=>"012"),
+  array("lat"=>"345","lng"=>"678"),
+  array("lat"=>"123","lng"=>"456"),
+  array("lat"=>"123","lng"=>"456")
+  );
+
+foreach($cooperativas as $coo){
+
+	print_r($coo);
+
+}
+
+exit;
+
+
+
+
+
+
+
+
+
+
+// ====================================================== //
+
+
+//INSTANCIA A CLASSE
 $Coleta = new Coleta;
 $oColetaVO = new ColetaVO;
 
 //GERA UM ID ALEATÓRIO DE 8 DÍGITOS
 $i = 0;
-$id = '';		
+$id = '';
 while($i<8){
 	if($i<1){ $id .= rand(1,9);	} else { $id .= rand(0,9); }
 	$i++;
 }
-
-
-https://maps.googleapis.com/maps/api/directions/json?origin=Peixoto%20Gomide,%20296&destination=Rua%20Sergipe,%20134,%20Altin%C3%B3polis&mode=driving
-//R. Peixoto Gomide, 296 - Cerqueira Cezar, SP, 01409-001
-
-
 
 //SETA OS VALORES
 $oColetaVO->setColetaID($id);
@@ -101,24 +189,6 @@ if($oInsereColeta){
 			$oInsereItem = $Coleta->inserirItens($id,$item);
 		}
 	}
-
-	//INSTANCIA A CLASSE
-	$Usuario = new Usuario;
-	$oUsuarioVO = new UsuarioVO;
-
-	//SETA OS VALORES
-	$oUsuarioVO->setUsuarioID($usuarioID);
-	$oUsuarioVO->setCep($cep);
-	$oUsuarioVO->setEndereco($endereco);
-	$oUsuarioVO->setNumero($numero);
-	$oUsuarioVO->setComplemento($complemento);
-	$oUsuarioVO->setBairro($bairro);
-	$oUsuarioVO->setCidade($cidade);
-	$oUsuarioVO->setEstado($estado);
-	$oUsuarioVO->setAtivo(1);
-
-	//ATUALIZA ENDEREÇO
-	$oUsuario = $Usuario->alterarEndereco($oUsuarioVO);
 
 	if($oUsuario){
 

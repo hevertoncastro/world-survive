@@ -12,6 +12,8 @@ class UsuarioVO{
 	private $Bairro;
 	private $Cidade;
 	private $Estado;
+	private $Latitude;
+	private $Longitude;
 	private $Celular;
 	private $Inclusao;
 	private $Ativo;
@@ -38,6 +40,10 @@ class UsuarioVO{
 	function getCidade() { return $this->Cidade; }
 	function setEstado($Estado) { $this->Estado = $Estado; }
 	function getEstado() { return $this->Estado; }
+	function setLatitude($Latitude) { $this->Latitude = $Latitude; }
+	function getLatitude() { return $this->Latitude; }
+	function setLongitude($Longitude) { $this->Longitude = $Longitude; }
+	function getLongitude() { return $this->Longitude; }
 	function setCelular($Celular) { $this->Celular = $Celular; }
 	function getCelular() { return $this->Celular; }
 	function setInclusao($Inclusao) { $this->Inclusao = $Inclusao; }
