@@ -312,6 +312,9 @@ if(isset($usuarioID) && !empty($usuarioID)){
 
                     } else if(data == "ok"){
 
+                      $(".loader").show();
+                      $(".btn-login-text").hide();
+
                       $(".response").removeClass("warning");
                       $(".response").addClass("success");
 

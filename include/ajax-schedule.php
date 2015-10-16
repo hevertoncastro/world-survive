@@ -73,6 +73,12 @@ while($i<8){
 	$i++;
 }
 
+
+https://maps.googleapis.com/maps/api/directions/json?origin=Peixoto%20Gomide,%20296&destination=Rua%20Sergipe,%20134,%20Altin%C3%B3polis&mode=driving
+//R. Peixoto Gomide, 296 - Cerqueira Cezar, SP, 01409-001
+
+
+
 //SETA OS VALORES
 $oColetaVO->setColetaID($id);
 $oColetaVO->setUsuarioID($usuarioID);
