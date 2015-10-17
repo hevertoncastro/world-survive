@@ -8,8 +8,6 @@ require_once('class/usuario.class.php');
 require_once('class/ResiduoVO.php');
 require_once('class/residuo.class.php');
 
-
-
 //INSTANCIA CLASSE
 $Residuo = new Residuo;
 $Usuario = new Usuario;
@@ -278,37 +276,37 @@ if(isset($usuarioID) && !empty($usuarioID)){
                     $(".btn-login-text").show();
 
                     //VERIFICAÇÃO DOS CAMPOS DE RETORNO DO PHP
-                    if(data == "campos_vazios"){
+                    if(data == "materiais"){
 
-                      returnError("name", "Digite seu <strong>nome, email e senha</strong>.");
+                      returnError("materiais", "Informe os <strong>materias que possui</strong>.");
 
-                    } else if(data == "nome_vazio"){
+                    } else if(data == "qtde"){
 
-                      returnError("name", "Digite seu <strong>nome</strong>.");
+                      returnError("qtde", "Informe a <strong>quantidade aproximada</strong> em kilos.");
 
-                    } else if(data == "email_vazio"){
+                    } else if(data == "data"){
 
-                      returnError("email", "Digite seu <strong>email</strong>.");
+                      returnError("data", "Informe a <strong>data de retirada</strong>.");
 
-                    } else if(data == "email_incorreto"){
+                    } else if(data == "periodo"){
 
-                      returnError("email", "Digite um <strong>email válido</strong>.");
+                      returnError("periodo", "Informe o <strong>período</strong> para retirada.");
 
-                    } else if(data == "senha_vazia"){
+                    } else if(data == "cep"){
 
-                      returnError("password", "Digite sua <strong>senha</strong>.");
+                      returnError("cep", "Informe seu <strong>CEP</strong>.");
 
-                    } else if(data == "senha_curta"){
+                    } else if(data == "endereco"){
 
-                      returnError("password", "Sua senha deve ter no mínimo <strong>6 caracteres</strong>.");
+                      returnError("endereco", "Informe seu <strong>endereço</strong>.");
 
-                    } else if(data == "usuario_existe"){
+                    } else if(data == "numero"){
 
-                      returnError("name", "Você <strong>já possui um cadastro</strong> no site.");
+                      returnError("numero", "Informe o <strong>número do seu endereço</strong>.");
 
-                    } else if(data == "erro"){
+                    } else if(data == "cidade"){
 
-                      returnError("password", "Usuário e/ou senha incorretos");
+                      returnError("cidade", "Informe sua <strong>cidade</strong>.");
 
                     } else if(data == "ok"){
 

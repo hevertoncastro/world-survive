@@ -22,8 +22,6 @@ $("input").bind("keydown", function(event) {
 //RETORNA RESPOSTA
 returnError = function(item, message){
 
-	//FOCA NO CAMPO
-	$("#"+item).focus();
 	//ADD BORDA VERMELHA
 	$("#"+item).addClass("invalid");
 	//ADD ESTILO DE ALERTA NA RESPOSTA
@@ -31,6 +29,18 @@ returnError = function(item, message){
 	//PREENCHE RESPOSTA E MOSTRA
 	$(".response p").html(message);
 	$(".response").show("slow");
+
+	//FOCA NO CAMPO
+    setTimeout(function(){
+
+    	$('html, body').animate({
+		    scrollTop: $("#"+item).offset().top
+		    
+		}, 700);
+		$("#"+item).focus();
+
+    }, 2000);
+    
 
     //ESCONVE AVISO APÓS DELAY
     setTimeout(function(){

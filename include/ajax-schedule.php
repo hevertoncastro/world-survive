@@ -1,36 +1,4 @@
 <?php
-
-$cooperativas = array
-  (
-  array("id"=>"id123", "lat"=>"123", "lng"=>"456"),
-  array("id"=>"id123", "lat"=>"789", "lng"=>"012"),
-  array("id"=>"id123", "lat"=>"345", "lng"=>"678"),
-  array("id"=>"id123", "lat"=>"123", "lng"=>"456"),
-  array("id"=>"id123", "lat"=>"123", "lng"=>"456")
-  );
-
-$distancias = "";
-
-$cont = 0;
-
-foreach($cooperativas as $coo){
-
-	echo $cont;
-	echo "<br>";
-
-	print_r($coo);
-	echo $coo['lat'];
-	echo " / ";
-	echo $coo['lng'];
-	echo "<br>--------<br>";
-
-	$cont++;
-
-}
-
-exit;
-
-
 //INCLUI CONEXÃO COM O BD
 require_once('conection.inc.php');
 
@@ -40,9 +8,11 @@ require_once('../class/ColetaVO.php');
 require_once('../class/coleta.class.php');
 require_once('../class/UsuarioVO.php');
 require_once('../class/usuario.class.php');
-require_once('../class/mapsapi.class.php');
+require_once('../class/CooperativaVO.php');
+require_once('../class/cooperativa.class.php');
 require_once('../class/LogVO.php');
 require_once('../class/log.class.php');
+require_once('../class/mapsapi.class.php');
 
 //INCLUI ANT SQL INJECTION
 include("antiSQLInjection.php");
@@ -63,33 +33,39 @@ foreach($_POST as $key => $value) {
   $$key = (isset($key)) ? noInjection($value) : NULL;
 }
 
-/*
 //VALIDAÇÕES
-if(empty($name) && empty($email) && empty($senha)){
-	echo "campos_vazios";
+if(empty($materiais)){
+	echo "materiais";
 	exit;
 }
-if(empty($name)){
-	echo "nome_vazio";
+if(empty($qtde)){
+	echo "qtde";
 	exit;
 }
-if(empty($email)){
-	echo "email_vazio";
+if(empty($data)){
+	echo "data";
 	exit;
 }
-if(empty($senha)){
-	echo "senha_vazia";
+if(empty($periodo)){
+	echo "periodo";
 	exit;
 }
-if(strlen($senha)<6){
-	echo "senha_curta";
+if(empty($cep)){
+	echo "cep";
 	exit;
 }
-if($oColeta){
-	echo "usuario_existe";
+if(empty($endereco)){
+	echo "endereco";
 	exit;
 }
-*/
+if(empty($numero)){
+	echo "numero";
+	exit;
+}
+if(empty($cidade)){
+	echo "cidade";
+	exit;
+}
 
 //INSTANCIA A CLASSE
 $Usuario = new Usuario;
@@ -109,7 +85,7 @@ $oUsuarioVO->setEstado($estado);
 $ApiMaps = new ApiMaps;
 
 //CONVERTE ENDEREÇO PRA STRING ÚNICA
-$enderecoFormatado = $ApiMaps->formatAddress($endereco, $numero, "$cidade", $estado, $cep);
+$enderecoFormatado = $ApiMaps->formatAddress($endereco, $numero, $cidade, $estado, $cep);
 
 //CHAMA FUNÇÃO QUE RETORNA LATITUDE E LONGITUDE
 $LatLng = $ApiMaps->getLatLng($enderecoFormatado);
@@ -120,37 +96,42 @@ $oUsuarioVO->setLongitude($LatLng['lng']);
 
 $oUsuarioVO->setAtivo(1);
 
+//COORDENADAS DO ENDEREÇO DO USUÁRIO
+$usuEndereco = number_format($LatLng['lat'],6).",".number_format($LatLng['lng'],6);
+
 //ATUALIZA ENDEREÇO
 $oUsuario = $Usuario->alterarEndereco($oUsuarioVO);
 
 
 // =========  CALCULAR COOPERATIVA MAIS PRÓXIMA ========= //
 
-$cooperativas = array
-  (
-  array("lat"=>"123","lng"=>"456"),
-  array("lat"=>"789","lng"=>"012"),
-  array("lat"=>"345","lng"=>"678"),
-  array("lat"=>"123","lng"=>"456"),
-  array("lat"=>"123","lng"=>"456")
-  );
+//INSTANCIA A CLASSE
+$Cooperativa = new Cooperativa;
+$oCooperativaVO = new CooperativaVO;
 
-foreach($cooperativas as $coo){
+//CARREGA COOPERATIVAS
+$oCooperativas = $Cooperativa->carregarCooperativas("","coo_nome ASC","");
 
-	print_r($coo);
+$distances = "";
+
+//LOOP EM TODAS COOPERATIVAS
+foreach($oCooperativas as $coo){
+
+	//COORDENADAS DO ENDEREÇO DA COOPERATIVAS	
+	$cooEndereco = number_format($coo->getLatitude(),6).",".number_format($coo->getLongitude(),6);
+
+	//CHAMA FUNÇÃO QUE CALCULA DISTÂNCIA E TEMPO
+	$distance = $ApiMaps->getDistance($cooEndereco, $usuEndereco);
+
+	if($distance){
+		//POPULA ARRAY COM TEMPO E ID DE CADA COOPERATIVA
+		$distances[$coo->getCooperativaID()] = $distance['durationValue'];
+	}
 
 }
 
-exit;
-
-
-
-
-
-
-
-
-
+//This will return the first index that has the minimum value in the array
+$betterDistance = array_search(min($distances), $distances);
 
 // ====================================================== //
 
@@ -170,7 +151,7 @@ while($i<8){
 //SETA OS VALORES
 $oColetaVO->setColetaID($id);
 $oColetaVO->setUsuarioID($usuarioID);
-$oColetaVO->setCooperativaID('22222222'); //ALTERAR POSTERIORMENTE
+$oColetaVO->setCooperativaID($betterDistance);
 $oColetaVO->setFuncionarioID('11111111'); //ALTERAR POSTERIORMENTE
 $oColetaVO->setData($data_padrao);
 $oColetaVO->setPeriodo($periodo);
@@ -205,10 +186,12 @@ if($oInsereColeta){
 
 		echo 'ok';
 		exit;
+
 	} else {
 		echo 'erro';
 		exit;
 	}
+
 } else {
 	echo 'erro';
 	exit;

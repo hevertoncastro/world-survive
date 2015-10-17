@@ -66,26 +66,6 @@ class Usuario extends UsuarioVO{
 
 	}
 
-	public function alterarMinhaConta(UsuarioVO $dados) {
-
-		$conexao = MySQL::getMySQL();
-
-		$sql = "UPDATE usuarios SET ";
-		$sql .=  "usu_nome = '".addslashes($dados->getNome())."',";
-		$sql .=  "usu_senha = '".md5(addslashes($dados->getSenha()))."'";
-
-		$sql .= " WHERE usu_id = ".$dados->getUsuarioID();
-
-		$retorno = $conexao->alterar($sql);
-
-		if($retorno){
-			return $this->consultarUsuario($dados->getUsuarioID());
-		}else{
-			return false;
-		}
-
-	}
-
 	public function alterarEndereco(UsuarioVO $dados) {
 
 		$conexao = MySQL::getMySQL();
@@ -156,6 +136,8 @@ class Usuario extends UsuarioVO{
 			$usuario->setBairro($consulta[0]['usu_bairro']);
 			$usuario->setCidade($consulta[0]['usu_cidade']);
 			$usuario->setEstado($consulta[0]['usu_estado']);
+			$usuario->getLatitude($consulta[0]['usu_lat']);
+			$usuario->getLongitude($consulta[0]['usu_lng']);
 			$usuario->setCelular($consulta[0]['usu_celular']);
 			$usuario->setInclusao($consulta[0]['usu_inclusao']);
 			$usuario->setAtivo($consulta[0]['usu_ativo']);

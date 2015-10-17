@@ -12,18 +12,24 @@ class ApiMaps{
 		//Decodifica o json através do json_decode():
 		$json = json_decode($url, true); // decode the JSON into an associative array
 
-		$result['lat'] = $json['results'][0]['geometry']['location']['lat'];
-		$result['lng'] = $json['results'][0]['geometry']['location']['lng'];
+		if($json['status'] == "OK"){
 
-		return $result;
+			$result['lat'] = $json['results'][0]['geometry']['location']['lat'];
+			$result['lng'] = $json['results'][0]['geometry']['location']['lng'];
+
+			return $result;
+
+		} else {
+			return false;
+		}
 
 	}
 
 	public function getDistance($origem, $destino){
 
 		//trata caracteres especiais do endereco
-		$origem = $this->myUrlEncode($origem);
-		$destino = $this->myUrlEncode($destino);
+		//$origem = $this->myUrlEncode($origem);
+		//$destino = $this->myUrlEncode($destino);
 
 	    //Pega o conteúdo retornado em json através do file_get_contents():
 	    $url = file_get_contents("https://maps.googleapis.com/maps/api/directions/json?origin=".$origem."&destination=".$destino."&mode=driving"); //mode pode ser transit também
@@ -31,17 +37,21 @@ class ApiMaps{
 		//Decodifica o json através do json_decode():
 		$json = json_decode($url, true); // decode the JSON into an associative array
 
-		$result['distanceText'] = $json['routes'][0]['legs'][0]['distance']['text'];
-		$result['distanceValue'] = $json['routes'][0]['legs'][0]['distance']['value'];
+		if($json['status'] == "OK"){
 
-		$result['durationText'] = $json['routes'][0]['legs'][0]['duration']['text'];
-		$result['durationValue'] = $json['routes'][0]['legs'][0]['duration']['value'];
+			$result['distanceText'] = $json['routes'][0]['legs'][0]['distance']['text'];
+			$result['distanceValue'] = $json['routes'][0]['legs'][0]['distance']['value'];
 
-		return $result;
+			$result['durationText'] = $json['routes'][0]['legs'][0]['duration']['text'];
+			$result['durationValue'] = $json['routes'][0]['legs'][0]['duration']['value'];
+
+			return $result;
+
+		} else {
+			return false;
+		}
 
 	}
-
-	//https://maps.googleapis.com/maps/api/directions/json?origin=EnderecodeOrgigem&destination=EnderecodeDestino&mode=driving
 
 	public function formatAddress($endereco, $numero, $cidade, $estado, $cep){
 
