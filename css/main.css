@@ -82,7 +82,9 @@ h2.form-title.coleta{
 .datapicker-label{
   top: -15px !important;
 }
-
+.icon-datapicker{
+  cursor: pointer;
+}
 .response{
   width: 100%;
   height: auto;  
@@ -119,5 +121,8 @@ h2.form-title.coleta{
   position: relative;
   top: 8px;
   display: none;
+}
+.bold{
+  font-weight: bold;
 }
 

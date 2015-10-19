@@ -102,65 +102,71 @@ $usuEndereco = number_format($LatLng['lat'],6).",".number_format($LatLng['lng'],
 //ATUALIZA ENDEREÇO
 $oUsuario = $Usuario->alterarEndereco($oUsuarioVO);
 
+if($oUsuario){
 
-// =========  CALCULAR COOPERATIVA MAIS PRÓXIMA ========= //
+	// =========  CALCULAR COOPERATIVA MAIS PRÓXIMA ========= //
 
-//INSTANCIA A CLASSE
-$Cooperativa = new Cooperativa;
-$oCooperativaVO = new CooperativaVO;
+	//INSTANCIA A CLASSE
+	$Cooperativa = new Cooperativa;
+	$oCooperativaVO = new CooperativaVO;
 
-//CARREGA COOPERATIVAS
-$oCooperativas = $Cooperativa->carregarCooperativas("","coo_nome ASC","");
+	//CARREGA COOPERATIVAS
+	$oCooperativas = $Cooperativa->carregarCooperativas("","coo_nome ASC","");
 
-$distances = "";
+	$distances = "";
 
-//LOOP EM TODAS COOPERATIVAS
-foreach($oCooperativas as $coo){
+	//LOOP EM TODAS COOPERATIVAS
+	foreach($oCooperativas as $coo){
 
-	//COORDENADAS DO ENDEREÇO DA COOPERATIVAS	
-	$cooEndereco = number_format($coo->getLatitude(),6).",".number_format($coo->getLongitude(),6);
+		//COORDENADAS DO ENDEREÇO DA COOPERATIVAS	
+		$cooEndereco = number_format($coo->getLatitude(),6).",".number_format($coo->getLongitude(),6);
 
-	//CHAMA FUNÇÃO QUE CALCULA DISTÂNCIA E TEMPO
-	$distance = $ApiMaps->getDistance($cooEndereco, $usuEndereco);
+		//CHAMA FUNÇÃO QUE CALCULA DISTÂNCIA E TEMPO
+		$distance = $ApiMaps->getDistance($cooEndereco, $usuEndereco);
 
-	if($distance){
-		//POPULA ARRAY COM TEMPO E ID DE CADA COOPERATIVA
-		$distances[$coo->getCooperativaID()] = $distance['durationValue'];
+		if($distance){
+			//POPULA ARRAY COM TEMPO E ID DE CADA COOPERATIVA
+			$distances[$coo->getCooperativaID()] = $distance['durationValue'];
+		}
+
 	}
 
+	//This will return the first index that has the minimum value in the array
+	$betterDistance = array_search(min($distances), $distances);
+
+	// ====================================================== //
+
 }
 
-//This will return the first index that has the minimum value in the array
-$betterDistance = array_search(min($distances), $distances);
+if($oCooperativas){
 
-// ====================================================== //
+	//INSTANCIA A CLASSE
+	$Coleta = new Coleta;
+	$oColetaVO = new ColetaVO;
 
+	//GERA UM ID ALEATÓRIO DE 8 DÍGITOS
+	$i = 0;
+	$id = '';
+	while($i<8){
+		if($i<1){ $id .= rand(1,9);	} else { $id .= rand(0,9); }
+		$i++;
+	}
 
-//INSTANCIA A CLASSE
-$Coleta = new Coleta;
-$oColetaVO = new ColetaVO;
+	//SETA OS VALORES
+	$oColetaVO->setColetaID($id);
+	$oColetaVO->setUsuarioID($usuarioID);
+	$oColetaVO->setCooperativaID($betterDistance);
+	$oColetaVO->setFuncionarioID('11111111'); //ALTERAR POSTERIORMENTE
+	$oColetaVO->setData($data_padrao);
+	$oColetaVO->setPeriodo($periodo);
+	$oColetaVO->setQtde($qtde);
+	$oColetaVO->setInclusao(date('Y-m-d H:i:s'));
+	$oColetaVO->setSituacao(1);
 
-//GERA UM ID ALEATÓRIO DE 8 DÍGITOS
-$i = 0;
-$id = '';
-while($i<8){
-	if($i<1){ $id .= rand(1,9);	} else { $id .= rand(0,9); }
-	$i++;
+	//INSERE NOVO USUÁRIO
+	$oInsereColeta = $Coleta->inserirColeta($oColetaVO);
+
 }
-
-//SETA OS VALORES
-$oColetaVO->setColetaID($id);
-$oColetaVO->setUsuarioID($usuarioID);
-$oColetaVO->setCooperativaID($betterDistance);
-$oColetaVO->setFuncionarioID('11111111'); //ALTERAR POSTERIORMENTE
-$oColetaVO->setData($data_padrao);
-$oColetaVO->setPeriodo($periodo);
-$oColetaVO->setQtde($qtde);
-$oColetaVO->setInclusao(date('Y-m-d H:i:s'));
-$oColetaVO->setSituacao(1);
-
-//INSERE NOVO USUÁRIO
-$oInsereColeta = $Coleta->inserirColeta($oColetaVO);
 
 if($oInsereColeta){
 
@@ -171,26 +177,23 @@ if($oInsereColeta){
 		}
 	}
 
-	if($oUsuario){
+	$Log = new Log;
+	$oLogVO = new LogVO;
+	$oLogVO->setUsuarioID($usuarioID);
+	$oLogVO->setUsuario($usuarioNome);
+	$oLogVO->setAcao('Coleta: Usuário '.$usuarioNome.' solicitou uma coleta');
+	$oLogVO->setPagina($pagina);
+	$oLogVO->setIP(getIP());
+	$oLogVO->setAcesso(0);
+	$oLogVO->setData('Y-m-d H:i:s');
+	$Log->inserirLog($oLogVO);
 
-		$Log = new Log;
-		$oLogVO = new LogVO;
-		$oLogVO->setUsuarioID($usuarioID);
-		$oLogVO->setUsuario($usuarioNome);
-		$oLogVO->setAcao('Coleta: Usuário '.$usuarioNome.' solicitou uma coleta');
-		$oLogVO->setPagina($pagina);
-		$oLogVO->setIP(getIP());
-		$oLogVO->setAcesso(0);
-		$oLogVO->setData('Y-m-d H:i:s');
-		$Log->inserirLog($oLogVO);
+	//SETA OS DADOS NA SESSÃO
+	$_SESSION["coleta"]["id"] = $id;
+	$_SESSION["coleta"]["cooperativa"] = $betterDistance;
 
-		echo 'ok';
-		exit;
-
-	} else {
-		echo 'erro';
-		exit;
-	}
+	echo 'ok';
+	exit;
 
 } else {
 	echo 'erro';

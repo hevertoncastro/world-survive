@@ -72,7 +72,7 @@ if(isset($usuarioID) && !empty($usuarioID)){
             <div class="row">
               <div class="input-field col s12">
                 <label for="materiais" class="select-label">Materiais (utilize o ctrl para selecionar várias opções)</label>
-                <select name="materiais[]" id="materiais" class="browser-default" multiple style="height: 100px;">
+                <select name="materiais[]" id="materiais" tabindex="1" class="browser-default" multiple style="height: 100px;">
                   <?php
                   foreach($oResiduos as $aux){
                   ?>
@@ -86,7 +86,7 @@ if(isset($usuarioID) && !empty($usuarioID)){
             <div class="row">
               <div class="input-field col s12">
                 <label for="qtde" class="select-label">Quantidade aproximada em kg</label>
-                <select name="qtde" id="qtde" class="browser-default">
+                <select name="qtde" id="qtde" tabindex="2" class="browser-default">
                   <option value="" selected>Selecione a quantidade</option>
                   <option value="10">Menos de 10 kg</option>
                   <option value="30">Entre 10 e 30 kg</option>
@@ -99,14 +99,14 @@ if(isset($usuarioID) && !empty($usuarioID)){
             <div class="row">
               <div class="input-field col s12">
                 <i class="material-icons prefix icon-datapicker">today</i>            
-                <input type="date" name="data" id="data" class="datepicker">
+                <input type="date" name="data" id="data" tabindex="3" class="datepicker">
                 <label class="datapicker-label" for="data">Quando podemos retirar?</label>
               </div>
             </div>
             <div class="row">
               <div class="input-field col s12">
                 <label for="periodo" class="select-label">Em que período?</label>
-                <select name="periodo" id="periodo" class="browser-default">
+                <select name="periodo" id="periodo" tabindex="4" class="browser-default">
                   <option value="" selected>Selecione o período</option>
                   <option value="m">Manhã</option>
                   <option value="t">Tarde</option>
@@ -116,37 +116,37 @@ if(isset($usuarioID) && !empty($usuarioID)){
             </div>
             <div class="row">
               <div class="input-field col s4">
-                <input name="cep" id="cep" type="text" value="<?php if(isset($oUsuario)){echo $oUsuario->getCep();} ?>">
+                <input name="cep" id="cep" type="text" maxlength="10" tabindex="5" value="<?php if(isset($oUsuario)){echo $oUsuario->getCep();} ?>">
                 <label for="cep">CEP</label>
               </div>
               <div class="input-field col s8">
-                <input name="endereco" id="endereco" type="text" value="<?php if(isset($oUsuario)){echo $oUsuario->getEndereco();} ?>">
+                <input name="endereco" id="endereco" type="text" maxlength="150" tabindex="6" value="<?php if(isset($oUsuario)){echo $oUsuario->getEndereco();} ?>">
                 <label for="endereco">Endereço</label>
               </div>
             </div>
             <div class="row">
               <div class="input-field col s4">
-                <input name="numero" id="numero" type="text" value="<?php if(isset($oUsuario)){echo $oUsuario->getNumero();} ?>">
+                <input name="numero" id="numero" type="text" maxlength="8" tabindex="7" value="<?php if(isset($oUsuario)){echo $oUsuario->getNumero();} ?>">
                 <label for="numero">Número</label>
               </div>
               <div class="input-field col s8">
-                <input name="complemento" id="complemento" type="text" value="<?php if(isset($oUsuario)){echo $oUsuario->getComplemento();} ?>">
+                <input name="complemento" id="complemento" type="text" maxlength="100" tabindex="8" value="<?php if(isset($oUsuario)){echo $oUsuario->getComplemento();} ?>">
                 <label for="complemento">Complemento</label>
               </div>
             </div>
             <div class="row">
               <div class="input-field col s6">
-                <input name="bairro" id="bairro" type="text" value="<?php if(isset($oUsuario)){echo $oUsuario->getBairro();} ?>">
+                <input name="bairro" id="bairro" type="text" maxlength="65" tabindex="9" value="<?php if(isset($oUsuario)){echo $oUsuario->getBairro();} ?>">
                 <label for="bairro">Bairro</label>
               </div>
               <div class="input-field col s6">
-                <input name="estado" id="estado" type="text" value="<?php if(isset($oUsuario)){echo $oUsuario->getEstado();} ?>">
+                <input name="estado" id="estado" type="text" maxlength="2" tabindex="10" value="<?php if(isset($oUsuario)){echo $oUsuario->getEstado();} ?>">
                 <label for="estado">Estado</label>
               </div>
             </div>
             <div class="row">
               <div class="input-field col s12">
-                <input name="cidade" id="cidade" type="text" value="<?php if(isset($oUsuario)){echo $oUsuario->getCidade();} ?>">
+                <input name="cidade" id="cidade" type="text" maxlength="100" tabindex="11" value="<?php if(isset($oUsuario)){echo $oUsuario->getCidade();} ?>">
                 <label for="cidade">Cidade</label>
               </div>
             </div>
@@ -156,7 +156,7 @@ if(isset($usuarioID) && !empty($usuarioID)){
             </div>
 
             <div class="row">
-              <a class="waves-effect waves-light btn btn-large btn-login btn-send" tabindex="4">
+              <a class="waves-effect waves-light btn btn-large btn-login btn-send" tabindex="12">
               <div class="loader">
                 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                    width="24px" height="30px" viewBox="0 0 24 30" style="enable-background:new 0 0 50 50;" xml:space="preserve">
@@ -188,7 +188,7 @@ if(isset($usuarioID) && !empty($usuarioID)){
               </div>
 
               <span class="btn-login-text">AGENDAR</span></a>
-              <a href="index" class="waves-effect waves-teal btn-flat btn-large">CANCELAR</a>
+              <a href="index" class="waves-effect waves-teal btn-flat btn-large" tabindex="13">CANCELAR</a>
             </div>
           </form>
         </div>
@@ -235,10 +235,50 @@ if(isset($usuarioID) && !empty($usuarioID)){
             })
 
             //ABRE DATAPICKER PELO ÍCONE
-            $(".icon-datapicker").on("click", function(event){
+            $(".icon-datapicker").on("click focusout", function(event){
               picker.open(false);
               event.stopPropagation();
             });
+
+
+            $("#cep").on({
+              change: function() {
+
+                consultaCEP($(this).val());
+
+              }/*, blur: function() {
+
+                consultaCEP($(this).val());
+
+              }*/
+            });
+
+            function consultaCEP(cep){
+
+              cep = cep.replace(/[.-]/g, "");
+
+              //FAZ REQUISIÇÃO NA API DE CEP
+               $.ajax({
+                  url: "http://api.postmon.com.br/v1/cep/"+cep,
+                  type: "get",
+                  dataType: "json"
+
+               }).done(function(data){
+                  console.log(data);
+
+                  $("#endereco").val(data.logradouro);
+                  $("#bairro").val(data.bairro);
+                  $("#estado").val(data.estado);
+                  $("#cidade").val(data.cidade);
+
+               })
+               .fail(function(err){
+
+                  console.log(err);
+                  
+               });
+
+            }
 
             //AVISOS
             $('.btn-send').click(function() {

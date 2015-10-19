@@ -1,18 +1,61 @@
 <?php
-//INICIA SESSÃO
-@session_start();
+//INCLUI CLASSES
+require_once('include/security.inc.php');
+require_once('include/conection.inc.php');
+require_once('class/MySQL.class.php');
+require_once('class/ColetaVO.php');
+require_once('class/coleta.class.php');
+require_once('class/UsuarioVO.php');
+require_once('class/usuario.class.php');
+require_once('class/CooperativaVO.php');
+require_once('class/cooperativa.class.php');
+require_once('class/LogVO.php');
+require_once('class/log.class.php');
+require_once('class/mapsapi.class.php');
+require_once('include/converDate.php');
 
-// $_SESSION["login_usuario"]["id"] = "";
-// $_SESSION["login_usuario"]["nome"] = "";
-// $_SESSION["login_usuario"]["nivel"] = "";
-// $_SESSION["login_usuario"]["tempo"] = "";
-// $_SESSION["login_usuario"]["ip"] = "";
+//RECUPERA ID DA SESSÃO DO USUÁRIO
+$usuarioID = $_SESSION["login_usuario"]["id"];
+$coletaID = $_SESSION["coleta"]["id"];
+$cooID = $_SESSION["coleta"]["cooperativa"];
 
-// //DESTRÓI SESSÃO
-// session_destroy();
+//VERIFICA SE TEM PERMISSÃO
+if (empty($coletaID) || empty($cooID)){
+  //header("Location: login?res=sem_permissao");
+  //exit;
+}
 
-//PEGA AÇÃO POR GET
-$res = isset($_GET['res']) ? $_GET['res'] : NULL;
+//INSTANCIA A CLASSE
+$Coleta = new Coleta;
+$oColetaVO = new ColetaVO;
+
+//CARREGA COOPERATIVA
+$oColetas = $Coleta->consultarColeta($coletaID);
+
+//DADOS DA COLETA
+$colData = convertDate($oColetas->getData());
+$colPeriodo = $oColetas->getPeriodo();
+$x = array("m"=>"Manhã", "t"=>"Tarde", "n"=>"Noite");
+$colPeriodo = $x[$colPeriodo];
+
+//INSTANCIA A CLASSE
+$Cooperativa = new Cooperativa;
+$oCooperativaVO = new CooperativaVO;
+
+//CARREGA COOPERATIVA
+$oCooperativas = $Cooperativa->consultarCooperativa($cooID);
+
+//DADOS DA COOPERATIVA
+$cooNome = $oCooperativas->getNome();
+$cooTelefone = $oCooperativas->getTelefone();
+
+//INSTANCIA CLASSE
+$ApiMaps = new ApiMaps;
+
+//CONVERTE ENDEREÇO PRA STRING ÚNICA
+$cooEnderecoFormatado = $ApiMaps->formatAddress($oCooperativas->getEndereco(), $oCooperativas->getNumero(), $oCooperativas->getCidade(), $oCooperativas->getEstado(), $oCooperativas->getCep());
+
+
 ?>
 <!doctype html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
@@ -68,10 +111,11 @@ $res = isset($_GET['res']) ? $_GET['res'] : NULL;
           <form class="col s12" role="form" onSubmit="return false;">
             
             <div class="row">
-              <p>A coleta será feita pela cooperativa xxxxxxxxx<br>
-              Data da coleta: 00/00/0000<br>
-              Período: xxxxxx.<br>
-              Telefone de contato: (11) 98765-4321</p>
+              <p><span class="bold">A coleta será feita pela cooperativa:</span><br>
+              <?php echo $cooNome ?><br>
+              <span class="bold">Data da coleta:</span> <?php echo $colData ?><br>
+              <span class="bold">Período:</span> <?php echo $colPeriodo ?><br>
+              <span class="bold">Telefone de contato:</span> (11) 98765-4321</p>
             </div>
             <div class="row">
               <a class="waves-effect waves-light btn btn-large btn-login btn-send" tabindex="4">
