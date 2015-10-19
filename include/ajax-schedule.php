@@ -111,7 +111,7 @@ if($oUsuario){
 	$oCooperativaVO = new CooperativaVO;
 
 	//CARREGA COOPERATIVAS
-	$oCooperativas = $Cooperativa->carregarCooperativas("","coo_nome ASC","");
+	$oCooperativas = $Cooperativa->carregarCooperativas(" AND coo_ativo='1'","coo_nome ASC","");
 
 	$distances = "";
 

@@ -13,7 +13,7 @@ $Residuo = new Residuo;
 $Usuario = new Usuario;
 
 //CARREGA RESÍDUOS
-$oResiduos = $Residuo->carregarResiduos("","res_nome ASC","");
+$oResiduos = $Residuo->carregarResiduos("","res_id ASC","");
 
 //RECUPERA ID DA SESSÃO DO USUÁRIO
 $usuarioID = $_SESSION["login_usuario"]["id"];
@@ -69,23 +69,30 @@ if(isset($usuarioID) && !empty($usuarioID)){
         <div class="section row form-login">
           <h2 class="form-title coleta">Solicite a coleta</h2>
           <form class="col s12" id="formulario" role="form" onSubmit="return false;">
-            <div class="row">
+            <div class="row materiais">
               <div class="input-field col s12">
-                <label for="materiais" class="select-label">Materiais (utilize o ctrl para selecionar várias opções)</label>
-                <select name="materiais[]" id="materiais" tabindex="1" class="browser-default" multiple style="height: 100px;">
-                  <?php
-                  foreach($oResiduos as $aux){
-                  ?>
-                  <option value="<?php echo $aux->getResiduoID(); ?>"><?php echo $aux->getNome(); ?></option>
-                  <?php
-                  }
-                  ?>
-                </select>
+                <label class="select-label">Selecione os tipos de materiais de sua doação</label>
+              </div>
+              <div class="lista-material">
+              <?php
+              $cont = 1;
+              foreach($oResiduos as $aux){
+              ?>
+              <div class="input-field col s6 m4 l3">
+                <span>
+                  <input type="checkbox" value="<?php echo $aux->getResiduoID(); ?>" name="materiais[]" id="<?php echo "material_".$cont ?>">
+                  <label for="<?php echo "material_".$cont ?>"><?php echo $aux->getNome(); ?></label>
+                </span>
+              </div>
+              <?php
+                $cont++;
+              }
+              ?>
               </div>
             </div>
             <div class="row">
               <div class="input-field col s12">
-                <label for="qtde" class="select-label">Quantidade aproximada em kg</label>
+                <label for="qtde" class="select-label">Quantidade total aproximada em kg</label>
                 <select name="qtde" id="qtde" tabindex="2" class="browser-default">
                   <option value="" selected>Selecione a quantidade</option>
                   <option value="10">Menos de 10 kg</option>
@@ -93,7 +100,7 @@ if(isset($usuarioID) && !empty($usuarioID)){
                   <option value="50">Entre 30 e 50 kg</option>
                   <option value="100">Entre 50 e 100 kg</option>
                   <option value="150">Mais de 100 kg</option>
-                </select>              
+                </select>
               </div>
             </div>
             <div class="row">
@@ -111,7 +118,7 @@ if(isset($usuarioID) && !empty($usuarioID)){
                   <option value="m">Manhã</option>
                   <option value="t">Tarde</option>
                   <option value="n">Noite</option>
-                </select>              
+                </select>
               </div>
             </div>
             <div class="row">
@@ -264,7 +271,7 @@ if(isset($usuarioID) && !empty($usuarioID)){
                  .fail(function(err){
 
                     console.log(err);
-                    
+
                  });
 
               }/*, blur: function() {
@@ -279,7 +286,7 @@ if(isset($usuarioID) && !empty($usuarioID)){
 
                //DESATIVA BOTÃO PRA EVITAR CLIQUE DUPLO
                $('.btn-send').attr('disabled', true);
-               $('.btn-send').addClass("disabled");            
+               $('.btn-send').addClass("disabled");
 
                //MOSTRA LOADER E ESCONDE TEXTO
                $(".loader").show();
@@ -292,6 +299,35 @@ if(isset($usuarioID) && !empty($usuarioID)){
                datastring = $("#formulario").serialize();
                datastring += '&data_padrao=' + data_padrao;
 
+               //PEGA VALORES DOS CAMPOS OBRIGATÓRIOS
+               var materiais = $("#materiais").val();
+               var qtde = $("#qtde").val();
+               var data = $("#data").val();
+               var periodo = $("#periodo").val();
+               var cep = $("#cep").val();
+               var endereco = $("#endereco").val();
+               var estado = $("#estado").val();
+               var cidade = $("#cidade").val();
+
+               //MOSTRA MENSAGENS DE AGUARDE PARA USUÁRIO
+               if(materiais != "" & qtde != "" & data != "" & periodo != "" & cep != "" & endereco != "" & estado != "" & cidade != ""){
+
+                function mostraMensagem(msg){
+                  message = msg;
+                  $(".response").removeClass("success");
+                  $(".response").addClass("warning");
+                  $(".response p").html(message);
+                  $(".response").show("slow");
+                }
+
+                mostraMensagem("Procurando cooperativas na sua região...");
+
+                setTimeout(function(){
+                  mostraMensagem("Cooperativas localizadas, aguarde...");
+                }, 5000); //esconde o aviso depois um tempo
+
+               }
+
                //FAZ REQUISIÇÃO NO ARQUIVO PHP
                $.ajax({
                   url: "include/ajax-schedule.php",
@@ -303,7 +339,7 @@ if(isset($usuarioID) && !empty($usuarioID)){
 
                     //ATIVA BOTÃO NOVAMENTE
                     $('.btn-send').attr('disabled', false);
-                    $('.btn-send').removeClass("disabled");   
+                    $('.btn-send').removeClass("disabled");
 
                     //ESCONDE LOADER E MOSTRA TEXTO
                     $(".loader").hide();
@@ -351,7 +387,7 @@ if(isset($usuarioID) && !empty($usuarioID)){
                       $(".response").removeClass("warning");
                       $(".response").addClass("success");
 
-                      msg = "Agendando coleta de resíduos! Aguarde...";
+                      msg = "Cooperativa mais próxima selecionada...";
 
                       $(".response").show("slow");
                       $(".response p").html(msg);
@@ -371,7 +407,7 @@ if(isset($usuarioID) && !empty($usuarioID)){
                   //MOSTRA MSG DE ERRO
                   console.log(data);
                   returnError("cidade", "Erro de requisição, tente novamente mais tarde.");
-                  
+
                });
             });
 
