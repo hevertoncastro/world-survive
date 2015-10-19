@@ -240,11 +240,32 @@ if(isset($usuarioID) && !empty($usuarioID)){
               event.stopPropagation();
             });
 
-
+            //BUSCA DADOS DO CEP
             $("#cep").on({
               change: function() {
 
-                consultaCEP($(this).val());
+                cep = $(this).val();
+                cep = cep.replace(/[.-]/g, "");
+
+                //FAZ REQUISIÇÃO NA API DE CEP
+                 $.ajax({
+                    url: "http://api.postmon.com.br/v1/cep/"+cep,
+                    type: "get",
+                    dataType: "json"
+
+                 }).done(function(data){
+
+                    $("#endereco").val(data.logradouro);
+                    $("#bairro").val(data.bairro);
+                    $("#estado").val(data.estado);
+                    $("#cidade").val(data.cidade);
+
+                 })
+                 .fail(function(err){
+
+                    console.log(err);
+                    
+                 });
 
               }/*, blur: function() {
 
@@ -252,33 +273,6 @@ if(isset($usuarioID) && !empty($usuarioID)){
 
               }*/
             });
-
-            function consultaCEP(cep){
-
-              cep = cep.replace(/[.-]/g, "");
-
-              //FAZ REQUISIÇÃO NA API DE CEP
-               $.ajax({
-                  url: "http://api.postmon.com.br/v1/cep/"+cep,
-                  type: "get",
-                  dataType: "json"
-
-               }).done(function(data){
-                  console.log(data);
-
-                  $("#endereco").val(data.logradouro);
-                  $("#bairro").val(data.bairro);
-                  $("#estado").val(data.estado);
-                  $("#cidade").val(data.cidade);
-
-               })
-               .fail(function(err){
-
-                  console.log(err);
-                  
-               });
-
-            }
 
             //AVISOS
             $('.btn-send').click(function() {

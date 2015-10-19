@@ -125,4 +125,4 @@ h2.form-title.coleta{
 .bold{
   font-weight: bold;
 }
-
+#map { height: 300px; width: 100%; }

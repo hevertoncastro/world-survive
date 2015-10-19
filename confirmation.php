@@ -21,8 +21,8 @@ $cooID = $_SESSION["coleta"]["cooperativa"];
 
 //VERIFICA SE TEM PERMISSÃO
 if (empty($coletaID) || empty($cooID)){
-  //header("Location: login?res=sem_permissao");
-  //exit;
+  header("Location: login?res=sem_permissao");
+  exit;
 }
 
 //INSTANCIA A CLASSE
@@ -38,6 +38,10 @@ $colPeriodo = $oColetas->getPeriodo();
 $x = array("m"=>"Manhã", "t"=>"Tarde", "n"=>"Noite");
 $colPeriodo = $x[$colPeriodo];
 
+//DADOS DO USUÁRIO
+$usuLat = $_SESSION["login_usuario"]["latitude"];
+$usuLng = $_SESSION["login_usuario"]["longitude"];
+
 //INSTANCIA A CLASSE
 $Cooperativa = new Cooperativa;
 $oCooperativaVO = new CooperativaVO;
@@ -48,6 +52,8 @@ $oCooperativas = $Cooperativa->consultarCooperativa($cooID);
 //DADOS DA COOPERATIVA
 $cooNome = $oCooperativas->getNome();
 $cooTelefone = $oCooperativas->getTelefone();
+$cooLat = number_format($oCooperativas->getLatitude(),6);
+$cooLng = number_format($oCooperativas->getLongitude(),6);
 
 //INSTANCIA CLASSE
 $ApiMaps = new ApiMaps;
@@ -81,6 +87,7 @@ $cooEnderecoFormatado = $ApiMaps->formatAddress($oCooperativas->getEndereco(), $
         <!--[if lt IE 9]>
             <script src="js/vendor/html5-3.6-respond-1.4.2.min.js"></script>
         <![endif]-->
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDR8Kf7ryhRwXsSB10tk2_MeGP2OnFdBoQ&callback=initMap"></script>
     </head>
     <body>
         <!--[if lt IE 8]>
@@ -109,14 +116,6 @@ $cooEnderecoFormatado = $ApiMaps->formatAddress($oCooperativas->getEndereco(), $
         <div class="section row form-login">
           <h2 class="form-title">Agendamento realizado!</h2>
           <form class="col s12" role="form" onSubmit="return false;">
-            
-            <div class="row">
-              <p><span class="bold">A coleta será feita pela cooperativa:</span><br>
-              <?php echo $cooNome ?><br>
-              <span class="bold">Data da coleta:</span> <?php echo $colData ?><br>
-              <span class="bold">Período:</span> <?php echo $colPeriodo ?><br>
-              <span class="bold">Telefone de contato:</span> (11) 98765-4321</p>
-            </div>
             <div class="row">
               <a class="waves-effect waves-light btn btn-large btn-login btn-send" tabindex="4">
               <div class="loader">
@@ -148,9 +147,18 @@ $cooEnderecoFormatado = $ApiMaps->formatAddress($oCooperativas->getEndereco(), $
                   </rect>
                 </svg>
               </div>
-
               <span class="btn-login-text">COMPARTILHAR</span></a>
               <a href="logoff" class="waves-effect waves-teal btn-flat btn-large">SAIR</a>
+            </div>
+            <div class="row">
+              <p><span class="bold">A coleta será feita pela cooperativa:</span><br>
+              <?php echo $cooNome ?><br>
+              <span class="bold">Data da coleta:</span> <?php echo $colData ?><br>
+              <span class="bold">Período:</span> <?php echo $colPeriodo ?><br>
+              <span class="bold">Telefone de contato:</span> <?php echo $cooTelefone ?></p>
+            </div>
+            <div class="row">
+              <div id="map"></div>
             </div>
           </form>
         </div>
@@ -170,6 +178,56 @@ $cooEnderecoFormatado = $ApiMaps->formatAddress($oCooperativas->getEndereco(), $
         <script src="js/plugins.js"></script>
         <script src="js/main.js"></script>
         <script src="js/login.js"></script>
+        <script>
+        var map;
+        function initMap() {
+          var origin = {lat: <?php echo $usuLat ?>, lng: <?php echo $usuLng ?>};
+          var destination = {lat: <?php echo $cooLat ?>, lng: <?php echo $cooLng ?>};
+
+          var map = new google.maps.Map(document.getElementById('map'), {
+            center: origin,
+            scrollwheel: false,
+            zoom: 8
+          });
+
+          var directionsDisplay = new google.maps.DirectionsRenderer({
+            map: map,
+            suppressMarkers : true,
+            suppressInfoWindows: false,
+          });
+
+          var home = 'img/home.png';
+          var beachMarker = new google.maps.Marker({
+            position: origin,
+            map: map,
+            icon: home
+          });
+
+          var recycle = 'img/recycle.png';
+          var beachMarker = new google.maps.Marker({
+            position: destination,
+            map: map,
+            icon: recycle
+          });
+
+
+          // Set destination, origin and travel mode.
+          var request = {
+            destination: destination,
+            origin: origin,
+            travelMode: google.maps.TravelMode.DRIVING
+          };
+
+          // Pass the directions request to the directions service.
+          var directionsService = new google.maps.DirectionsService();
+          directionsService.route(request, function(response, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+              // Display the route on the map.
+              directionsDisplay.setDirections(response);
+            }
+          });
+        }
+        </script>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <script>

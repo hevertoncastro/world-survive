@@ -191,6 +191,8 @@ if($oInsereColeta){
 	//SETA OS DADOS NA SESSÃO
 	$_SESSION["coleta"]["id"] = $id;
 	$_SESSION["coleta"]["cooperativa"] = $betterDistance;
+	$_SESSION["login_usuario"]["latitude"] = $LatLng['lat'];
+	$_SESSION["login_usuario"]["longitude"] = $LatLng['lng'];
 
 	echo 'ok';
 	exit;
