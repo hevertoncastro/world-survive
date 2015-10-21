@@ -1,4 +1,5 @@
 <?php
+/*
 //INCLUI CLASSES
 require_once('include/security.inc.php');
 require_once('include/conection.inc.php');
@@ -61,7 +62,7 @@ $ApiMaps = new ApiMaps;
 //CONVERTE ENDEREÇO PRA STRING ÚNICA
 $cooEnderecoFormatado = $ApiMaps->formatAddress($oCooperativas->getEndereco(), $oCooperativas->getNumero(), $oCooperativas->getCidade(), $oCooperativas->getEstado(), $oCooperativas->getCep());
 
-
+*/
 ?>
 <!doctype html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
@@ -87,7 +88,7 @@ $cooEnderecoFormatado = $ApiMaps->formatAddress($oCooperativas->getEndereco(), $
         <!--[if lt IE 9]>
             <script src="js/vendor/html5-3.6-respond-1.4.2.min.js"></script>
         <![endif]-->
-        <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDR8Kf7ryhRwXsSB10tk2_MeGP2OnFdBoQ&callback=initMap"></script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDR8Kf7ryhRwXsSB10tk2_MeGP2OnFdBoQ&callback=initMap"></script>
     </head>
     <body>
         <!--[if lt IE 8]>
@@ -107,21 +108,104 @@ $cooEnderecoFormatado = $ApiMaps->formatAddress($oCooperativas->getEndereco(), $
         </div>
         </nav>
 
-        <div class="section row form-login">
-          <h2 class="form-title">Agendamento realizado!</h2>
-          <form class="col s12" role="form" onSubmit="return false;">
-            <div class="row">
-              <a class="waves-effect waves-light btn btn-large btn-share" tabindex="4">COMPARTILHAR</a>
-              <a href="logoff" class="waves-effect waves-teal btn-flat btn-large">SAIR</a>
-            </div>
-            <div class="row share">
-              <div class="pw-widget pw-counter-vertical">
-                <a class="pw-button-facebook pw-look-native"></a>
-                <a class="pw-button-twitter pw-look-native"></a>
-                <a class="pw-button-googleplus pw-look-native"></a>
-                <a class="pw-button-email pw-look-native"></a>
+        <div class="section row form-orders">
+
+          <div class="row">
+              <div class="input-field col s12 m6 l6">
+                <h2 class="form-title">Agendamentos</h2>
               </div>
-              <script src="http://i.po.st/static/v3/post-widget.js#publisherKey=mjegnr0kqs6c2kv0qija&retina=true" type="text/javascript"></script>
+              <div class="input-field col s12 m6 l4 date-orders">
+                <i class="material-icons prefix icon-datapicker">today</i>
+                <input type="date" name="data" id="data" tabindex="3" class="datepicker">
+              </div>
+            </div>
+          <form class="col s12" role="form" onSubmit="return false;">
+
+
+
+            <table class="responsive-table striped highlight">
+              <thead>
+                <tr>
+                    <th data-field="nome">Nome</th>
+                    <th data-field="qtde">Quantidade</th>
+                    <th data-field="periodo">Período</th>
+                    <th data-field="endereco">Endereço</th>
+                    <th data-field="responsavel">Responsável</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td>Alvin</td>
+                  <td>30 a 50 kg</td>
+                  <td>Manhã</td>
+                  <td>Endereço</td>
+                  <td>
+                    <label for="periodo" class="select-label">Em que período?</label>
+                    <select name="periodo" id="periodo" tabindex="4" class="browser-default">
+                      <option value="" selected>Selecione o período</option>
+                      <option value="m">Manhã</option>
+                      <option value="t">Tarde</option>
+                      <option value="n">Noite</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Alvin</td>
+                  <td>30 a 50 kg</td>
+                  <td>Manhã</td>
+                  <td>Endereço</td>
+                  <td>
+                    <label for="periodo" class="select-label">Em que período?</label>
+                    <select name="periodo" id="periodo" tabindex="4" class="browser-default">
+                      <option value="" selected>Selecione o período</option>
+                      <option value="m">Manhã</option>
+                      <option value="t">Tarde</option>
+                      <option value="n">Noite</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Alvin</td>
+                  <td>30 a 50 kg</td>
+                  <td>Manhã</td>
+                  <td>Endereço</td>
+                  <td>
+                    <label for="periodo" class="select-label">Em que período?</label>
+                    <select name="periodo" id="periodo" tabindex="4" class="browser-default">
+                      <option value="" selected>Selecione o período</option>
+                      <option value="m">Manhã</option>
+                      <option value="t">Tarde</option>
+                      <option value="n">Noite</option>
+                    </select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+
+
+            <!-- Modal Trigger -->
+            <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a>
+
+            <!-- Modal Structure -->
+            <div id="modal1" class="modal">
+              <div class="modal-content">
+                <h4>Modal Header</h4>
+                <p>A bunch of text</p>
+              </div>
+              <div class="modal-footer">
+                <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
+              </div>
+            </div>
+
+            <div class="row">
+              <a class="waves-effect waves-light btn btn-large btn-login" tabindex="4">
+              <div class="loader">
+                <?php include_once('include/loader.php') ?>
+              </div>
+              <span class="btn-login-text">COMPARTILHAR</span></a>
+              <a href="logoff" class="waves-effect waves-teal btn-flat btn-large">SAIR</a>
             </div>
             <div class="row">
               <p><span class="bold">A coleta será feita pela cooperativa:</span><br>
@@ -152,6 +236,7 @@ $cooEnderecoFormatado = $ApiMaps->formatAddress($oCooperativas->getEndereco(), $
         <script src="js/main.js"></script>
         <script src="js/login.js"></script>
         <script>
+        /*
         var map;
         function initMap() {
           var origin = {lat: <?php echo $usuLat ?>, lng: <?php echo $usuLng ?>};
@@ -200,6 +285,7 @@ $cooEnderecoFormatado = $ApiMaps->formatAddress($oCooperativas->getEndereco(), $
             }
           });
         }
+        */
         </script>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
@@ -213,10 +299,28 @@ $cooEnderecoFormatado = $ApiMaps->formatAddress($oCooperativas->getEndereco(), $
 
         (function ($) {
 
-          //BOTÕES DE COMPARTILHAMENTO
-          $(".btn-share").click(function() {
-            $(".share").toggle("fast");
+          $(document).ready(function(){
+            // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+            $('.modal-trigger').leanModal();
           });
+
+          //DATA PICKER
+            $input = $('.datepicker').pickadate({
+              selectMonths: true, // Creates a dropdown to control month
+              selectYears: 2 // Creates a dropdown of 15 years to control year
+            });
+            data_padrao = "";
+            picker = $input.pickadate('picker');
+            //FORMATA DATA
+            picker.on('close', function() {
+              data_padrao = picker.get('select', 'yyyy/mm/dd');
+            })
+
+            //ABRE DATAPICKER PELO ÍCONE
+            $(".icon-datapicker").on("click focusout", function(event){
+              picker.open(false);
+              event.stopPropagation();
+            });
 
         }(jQuery));
         </script>

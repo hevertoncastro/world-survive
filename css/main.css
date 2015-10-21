@@ -62,6 +62,12 @@ width: 100%;
     float: none;
     margin: 20px auto;
 }
+.form-orders{
+    width: 100%;
+    max-width: 860px;
+    float: none;
+    margin: 20px auto;
+}
 h4.header {
     margin:5.14rem 0 0.912rem 0;
 }
@@ -136,4 +142,13 @@ h2.form-title.coleta{
   position: relative;
   top: -25px;
   margin-bottom: 50px;
+}
+.share{
+  display: none;
+}
+.date-orders{
+  top: -5px;
+}
+.date-orders>.icon-datapicker{
+  line-height: 2.3;
 }
