@@ -123,7 +123,7 @@ if(isset($usuarioID) && !empty($usuarioID)){
             </div>
             <div class="row">
               <div class="input-field col s4">
-                <input name="cep" id="cep" type="text" maxlength="10" tabindex="5" value="<?php if(isset($oUsuario)){echo $oUsuario->getCep();} ?>">
+                <input name="cep" id="cep" type="text" maxlength="8" tabindex="5" value="<?php if(isset($oUsuario)){echo $oUsuario->getCep();} ?>">
                 <label for="cep">CEP</label>
               </div>
               <div class="input-field col s8">
@@ -165,33 +165,7 @@ if(isset($usuarioID) && !empty($usuarioID)){
             <div class="row">
               <a class="waves-effect waves-light btn btn-large btn-login btn-send" tabindex="12">
               <div class="loader">
-                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                   width="24px" height="30px" viewBox="0 0 24 30" style="enable-background:new 0 0 50 50;" xml:space="preserve">
-                  <rect x="0" y="13" width="4" height="5" fill="#5FA945">
-                    <animate attributeName="height" attributeType="XML"
-                      values="5;21;5" 
-                      begin="0s" dur="0.6s" repeatCount="indefinite" />
-                    <animate attributeName="y" attributeType="XML"
-                      values="13; 5; 13"
-                      begin="0s" dur="0.6s" repeatCount="indefinite" />
-                  </rect>
-                  <rect x="10" y="13" width="4" height="5" fill="#5FA945">
-                    <animate attributeName="height" attributeType="XML"
-                      values="5;21;5" 
-                      begin="0.15s" dur="0.6s" repeatCount="indefinite" />
-                    <animate attributeName="y" attributeType="XML"
-                      values="13; 5; 13"
-                      begin="0.15s" dur="0.6s" repeatCount="indefinite" />
-                  </rect>
-                  <rect x="20" y="13" width="4" height="5" fill="#5FA945">
-                    <animate attributeName="height" attributeType="XML"
-                      values="5;21;5" 
-                      begin="0.3s" dur="0.6s" repeatCount="indefinite" />
-                    <animate attributeName="y" attributeType="XML"
-                      values="13; 5; 13"
-                      begin="0.3s" dur="0.6s" repeatCount="indefinite" />
-                  </rect>
-                </svg>
+                <?php include_once('include/loader.php') ?>
               </div>
 
               <span class="btn-login-text">AGENDAR</span></a>
@@ -249,36 +223,57 @@ if(isset($usuarioID) && !empty($usuarioID)){
 
             //BUSCA DADOS DO CEP
             $("#cep").on({
-              change: function() {
+              keyup: function(e) {
+
+                // Allow: backspace, delete, tab, escape, enter and .
+                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                     // Allow: Ctrl+A
+                    (e.keyCode == 65 && e.ctrlKey === true) ||
+                     // Allow: Ctrl+C
+                    (e.keyCode == 67 && e.ctrlKey === true) ||
+                     // Allow: Ctrl+X
+                    (e.keyCode == 88 && e.ctrlKey === true) ||
+                     // Allow: home, end, left, right
+                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                         // let it happen, don't do anything
+                         return;
+                }
+                // Ensure that it is a number and stop the keypress
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
 
                 cep = $(this).val();
-                cep = cep.replace(/[.-]/g, "");
 
-                //FAZ REQUISIÇÃO NA API DE CEP
-                 $.ajax({
+                if(cep.length===8){
+
+                  //FAZ REQUISIÇÃO NA API DE CEP
+                  $.ajax({
                     url: "http://api.postmon.com.br/v1/cep/"+cep,
                     type: "get",
                     dataType: "json"
 
-                 }).done(function(data){
+                  }).done(function(data){
+
+                    $("#numero").val("");
+                    $("#complemento").val("");
+                    $("#bairro").val("");
+                    $("#numero").focus();
 
                     $("#endereco").val(data.logradouro);
                     $("#bairro").val(data.bairro);
                     $("#estado").val(data.estado);
                     $("#cidade").val(data.cidade);
 
-                 })
-                 .fail(function(err){
+                  })
+                  .fail(function(err){
 
                     console.log(err);
 
-                 });
+                  });
+                }
 
-              }/*, blur: function() {
-
-                consultaCEP($(this).val());
-
-              }*/
+              }
             });
 
             //AVISOS
@@ -348,7 +343,7 @@ if(isset($usuarioID) && !empty($usuarioID)){
                     //VERIFICAÇÃO DOS CAMPOS DE RETORNO DO PHP
                     if(data == "materiais"){
 
-                      returnError("materiais", "Informe os <strong>materias que possui</strong>.");
+                      returnError("material_1", "Informe os <strong>materias que possui</strong>.");
 
                     } else if(data == "qtde"){
 
