@@ -72,12 +72,11 @@ $cooEnderecoFormatado = $ApiMaps->formatAddress($oCooperativas->getEndereco(), $
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
-        <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="apple-touch-icon" href="apple-touch-icon.png">
-        <link rel="shortcut icon" href="img/favicon.ico">
 
+        <?php include_once("include/seo-data.php") ?>
+
+        <!--Normalize CSS-->
         <link rel="stylesheet" href="css/normalize.min.css">
         <!--Import Google Icon Font-->
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -88,7 +87,7 @@ $cooEnderecoFormatado = $ApiMaps->formatAddress($oCooperativas->getEndereco(), $
         <!--[if lt IE 9]>
             <script src="js/vendor/html5-3.6-respond-1.4.2.min.js"></script>
         <![endif]-->
-        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDR8Kf7ryhRwXsSB10tk2_MeGP2OnFdBoQ&callback=initMap"></script>
+        <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDR8Kf7ryhRwXsSB10tk2_MeGP2OnFdBoQ&callback=initMap"></script>
     </head>
     <body>
         <!--[if lt IE 8]>
@@ -185,8 +184,6 @@ $cooEnderecoFormatado = $ApiMaps->formatAddress($oCooperativas->getEndereco(), $
 
 
 
-            <!-- Modal Trigger -->
-            <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a>
 
             <!-- Modal Structure -->
             <div id="modal1" class="modal">
@@ -199,21 +196,7 @@ $cooEnderecoFormatado = $ApiMaps->formatAddress($oCooperativas->getEndereco(), $
               </div>
             </div>
 
-            <div class="row">
-              <a class="waves-effect waves-light btn btn-large btn-login" tabindex="4">
-              <div class="loader">
-                <?php include_once('include/loader.php') ?>
-              </div>
-              <span class="btn-login-text">COMPARTILHAR</span></a>
-              <a href="logoff" class="waves-effect waves-teal btn-flat btn-large">SAIR</a>
-            </div>
-            <div class="row">
-              <p><span class="bold">A coleta será feita pela cooperativa:</span><br>
-              <?php echo $cooNome ?><br>
-              <span class="bold">Data da coleta:</span> <?php echo $colData ?><br>
-              <span class="bold">Período:</span> <?php echo $colPeriodo ?><br>
-              <span class="bold">Telefone de contato:</span> <?php echo $cooTelefone ?></p>
-            </div>
+
             <div class="row">
               <div id="map"></div>
             </div>
