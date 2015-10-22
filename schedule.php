@@ -30,12 +30,11 @@ if(isset($usuarioID) && !empty($usuarioID)){
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
-        <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="apple-touch-icon" href="apple-touch-icon.png">
-        <link rel="shortcut icon" href="img/favicon.ico">
 
+        <?php include_once("include/seo-data.php") ?>
+
+        <!--Normalize CSS-->
         <link rel="stylesheet" href="css/normalize.min.css">
         <!--Import Google Icon Font-->
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -258,12 +257,17 @@ if(isset($usuarioID) && !empty($usuarioID)){
                     $("#numero").val("");
                     $("#complemento").val("");
                     $("#bairro").val("");
+
+
+                    $("#endereco").val(data.logradouro).addClass('active');
+                    $("#bairro").val(data.bairro).addClass('active');
+                    $("#estado").val(data.estado).addClass('active');
+                    $("#cidade").val(data.cidade).addClass('active');
+
+                    $("#endereco + label, #bairro + label, #estado + label, #cidade + label").addClass('active');
+
                     $("#numero").focus();
 
-                    $("#endereco").val(data.logradouro);
-                    $("#bairro").val(data.bairro);
-                    $("#estado").val(data.estado);
-                    $("#cidade").val(data.cidade);
 
                   })
                   .fail(function(err){
