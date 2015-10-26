@@ -5981,7 +5981,7 @@ footer.page-footer .footer-copyright {
     width:15%
 }
 .tabs .tab a {
-    color:#ee6e73;
+    color:#7CE089;
     display:block;
     width:100%;
     height:100%;
@@ -5992,17 +5992,17 @@ footer.page-footer .footer-copyright {
     transition:color .28s ease
 }
 .tabs .tab a:hover {
-    color:#f9c9cb
+    color:#CFF3DB
 }
 .tabs .tab.disabled a {
-    color:#f9c9cb;
+    color:#CEF4DB;
     cursor:default
 }
 .tabs .indicator {
     position:absolute;
     bottom:0;
     height:2px;
-    background-color:#f6b2b5;
+    background-color:#BCEDC7;
     will-change:left,
     right
 }
@@ -6300,46 +6300,25 @@ button.btn-floating {
     pointer-events:none
 }
 .waves-effect.waves-light .waves-ripple {
-    background-color:rgba(255,
-    255,
-    255,
-    0.45)
+    background-color:rgba(255,255,255,0.45)
 }
 .waves-effect.waves-red .waves-ripple {
-    background-color:rgba(244,
-    67,
-    54,
-    0.7)
+    background-color:rgba(244,67,54,0.7)
 }
 .waves-effect.waves-yellow .waves-ripple {
-    background-color:rgba(255,
-    235,
-    59,
-    0.7)
+    background-color:rgba(255,235,59,0.7)
 }
 .waves-effect.waves-orange .waves-ripple {
-    background-color:rgba(255,
-    152,
-    0,
-    0.7)
+    background-color:rgba(255,152,0,0.7)
 }
 .waves-effect.waves-purple .waves-ripple {
-    background-color:rgba(156,
-    39,
-    176,
-    0.7)
+    background-color:rgba(156,39,176,0.7)
 }
 .waves-effect.waves-green .waves-ripple {
-    background-color:rgba(76,
-    175,
-    80,
-    0.7)
+    background-color:rgba(76,175,80,0.7)
 }
 .waves-effect.waves-teal .waves-ripple {
-    background-color:rgba(99,
-    179,
-    71,
-    0.7)
+    background-color:rgba(99,179,71,0.7)
 }
 .waves-notransition {
     -webkit-transition:none !important;
@@ -8701,10 +8680,10 @@ select {
 .picker__nav--next:hover {
     cursor:pointer;
     color:#000000;
-    background:#a1ded8
+    background:#A0DEA8
 }
 .picker__weekday-display {
-    background-color:#1f897f;
+    background-color:#1F8957;
     padding:10px;
     font-weight:200;
     letter-spacing:.5;
@@ -8770,7 +8749,7 @@ select {
 .picker__day--selected.picker__day--outfocus,
 .picker__day--selected:hover.picker__day--outfocus,
 .picker--focused .picker__day--selected.picker__day--outfocus {
-    background-color:#a1ded8
+    background-color:#9FDFB9
 }
 .picker__footer {
     text-align:right;
@@ -8800,7 +8779,7 @@ select {
 button.picker__today:focus,
 button.picker__clear:focus,
 button.picker__close:focus {
-    background-color:#a1ded8
+    background-color:#A0DEBB
 }
 button.picker__clear{
 	display: none;

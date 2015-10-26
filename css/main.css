@@ -5,6 +5,9 @@
  *
  * Made By MaterializeCSS.com
  */
+ body{
+  cursor: default;
+ }
 
 nav ul a,
 nav .brand-logo {
@@ -70,6 +73,12 @@ width: 100%;
 }
 h4.header {
     margin:5.14rem 0 0.912rem 0;
+}
+.sharing{
+  margin-top: -150px;
+}
+.shadow{
+  text-shadow: 2px 1px 3px #000;
 }
 
 h2.form-title{
@@ -151,4 +160,26 @@ h2.form-title.coleta{
 }
 .date-orders>.icon-datapicker{
   line-height: 2.3;
+}
+.date-orders>input{
+  font-size: 18px
+}
+.author{
+  left: -15%;
+  position: relative;
+  font-size: 16px;
+  font-style: italic;
+}
+.mask{
+  background: rgba(0, 0, 0, 0.46) none repeat scroll 0% 0%;
+}
+.material-title{
+  font-size: 16px;
+}
+.material-subtitle{
+  font-weight: bold;
+}
+.material-title.active{
+  font-weight: bold;
+  border-bottom: 2px solid #BCEDC7;
 }

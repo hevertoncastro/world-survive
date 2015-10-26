@@ -202,11 +202,18 @@ if(isset($usuarioID) && !empty($usuarioID)){
 
           (function ($) {
 
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth(); //January is 0!
+            var yyyy = today.getFullYear();
+
             //DATA PICKER
             $input = $('.datepicker').pickadate({
+              min: new Date(yyyy,mm,dd),
               selectMonths: true, // Creates a dropdown to control month
               selectYears: 2 // Creates a dropdown of 15 years to control year
             });
+
             data_padrao = "";
             picker = $input.pickadate('picker');
             //FORMATA DATA

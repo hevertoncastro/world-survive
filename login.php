@@ -49,14 +49,14 @@ $res = isset($_GET['res']) ? $_GET['res'] : NULL;
             <li><a href="index">Home</a></li>
             <li><a href="login">Entrar</a></li>
             <li><a href="new-account">Criar conta</a></li>
-            <li><a href="contact">Contato</a></li>
+            <li><a href="index#contact">Contato</a></li>
           </ul>
 
            <ul id="nav-mobile" class="side-nav">
             <li><a href="index">Home</a></li>
             <li><a href="login">Entrar</a></li>
             <li><a href="new-account">Criar conta</a></li>
-            <li><a href="contact">Contato</a></li>
+            <li><a href="index#contact">Contato</a></li>
           </ul>
           <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
         </div>
