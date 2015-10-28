@@ -183,3 +183,14 @@ h2.form-title.coleta{
   font-weight: bold;
   border-bottom: 2px solid #BCEDC7;
 }
+.funRes{
+  height: 2.2rem;
+}
+.coo-title{
+  font-size: 2em;
+}
+.order-icon{
+  position: relative;
+  top: 18px;
+  margin: 0 10px;
+}

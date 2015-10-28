@@ -149,5 +149,35 @@ class Coleta extends ColetaVO{
 			return false;
 		}
 	}
+
+	public function alterarStatus($id, $status) {
+
+		$conexao = MySQL::getMySQL();
+
+		$sql = "UPDATE `worldsurvive`.`coletas` SET ";
+		$sql .=  "`col_situacao` = '".$status."'";
+
+		$sql .= " WHERE `coletas`.`col_id` = '".$id."'";
+		//die($sql);
+
+		$retorno = $conexao->alterar($sql);
+
+		return $retorno;
+	}
+
+	public function alterarFuncionario($id, $funcionario) {
+
+		$conexao = MySQL::getMySQL();
+
+		$sql = "UPDATE `worldsurvive`.`coletas` SET ";
+		$sql .=  "`fun_id` = '".$funcionario."'";
+
+		$sql .= " WHERE `coletas`.`col_id` = '".$id."'";
+		//die($sql);
+
+		$retorno = $conexao->alterar($sql);
+
+		return $retorno;
+	}
 }
 ?>

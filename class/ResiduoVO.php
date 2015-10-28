@@ -11,6 +11,5 @@ class ResiduoVO{
 	function getNome() { return $this->Nome; }
 	function setAtivo($Ativo) { $this->Ativo = $Ativo; }
 	function getAtivo() { return $this->Ativo; }
-
 }
 ?>

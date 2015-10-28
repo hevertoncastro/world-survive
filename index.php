@@ -161,12 +161,12 @@
             <h4 class="teal-text">O que é Reciclável?</h4><br>
 
             <div class="row">
-              <div class="col s12">
+              <div class="col s12" style="min-width: 350px;">
                 <ul class="tabs">
                   <li class="tab col s3"><a class="teal-text material-title active" href="#papel">Papel</a></li>
-                  <li class="tab col s3"><a class="teal-text material-title" href="#metal">Metal</a></li>
                   <li class="tab col s3"><a class="teal-text material-title" href="#plastico">Plástico</a></li>
                   <li class="tab col s3"><a class="teal-text material-title" href="#vidro">Vidro</a></li>
+                  <li class="tab col s3"><a class="teal-text material-title" href="#metal">Metal</a></li>
                 </ul>
               </div>
               <div id="papel" class="col s12">
@@ -175,13 +175,6 @@
                 <p><span class="material-subtitle red-text">Não Recicláveis:</span> Adesivos, Etiquetas, Fita Crepe, Papel carbono, Fotografias, Papel toalha, Papel higiênico, Papéis engordurados, Metalizados, Parafinados, Plastificados, Papel de fax.</p>
 
                 <p><span class="material-subtitle amber-text text-darken-4">Cuidados especiais:</span> Devem estar secos, limpos (sem gordura, restos de comida, graxa), de preferência não amassados. As caixas de papelão devem estar desmontadas por uma questão de otimização do espaço no armazenamento.</p>
-              </div>
-              <div id="metal" class="col s12">
-                <p><span class="material-subtitle teal-text">Recicláveis:</span> Arame, Canos, Esquadrias, Ferragens, Latas de aço: óleo, sardinha, molho de tomate, Latas de alumínio.</p>
-
-                <p><span class="material-subtitle red-text">Não Recicláveis:</span> Baterias, Clipes, Esponja de aço, Grampos, Latas de combustível, Latas de tinta ou veneno, Pilhas.</p>
-
-                <p><span class="material-subtitle amber-text text-darken-4">Cuidados especiais:</span> Devem estar limpos e, se possível, reduzidos a um menor volume (amassados).</p>
               </div>
               <div id="plastico" class="col s12">
                 <p><span class="material-subtitle teal-text">Recicláveis:</span> Baldes, Brinquedos, Garrafas de água mineral, Higiene, Isopor, PET, Potes de alimentos, PVC, Recipientes de Limpeza, Sacos plásticos, Tampas.</p>
@@ -196,6 +189,13 @@
                 <p><span class="material-subtitle red-text">Não Recicláveis:</span> Ampolas de medicamentos, Cerâmicas, Cristal, Espelhos, Lâmpadas, Planos, Porcelanas.</p>
 
                 <p><span class="material-subtitle amber-text text-darken-4">Cuidados especiais:</span> Devem estar limpos e sem resíduos. Podem estar inteiros ou quebrados. Se quebrados devem ser embalados em papel grosso (jornal ou craft).</p>
+              </div>
+              <div id="metal" class="col s12">
+                <p><span class="material-subtitle teal-text">Recicláveis:</span> Arame, Canos, Esquadrias, Ferragens, Latas de aço: óleo, sardinha, molho de tomate, Latas de alumínio.</p>
+
+                <p><span class="material-subtitle red-text">Não Recicláveis:</span> Baterias, Clipes, Esponja de aço, Grampos, Latas de combustível, Latas de tinta ou veneno, Pilhas.</p>
+
+                <p><span class="material-subtitle amber-text text-darken-4">Cuidados especiais:</span> Devem estar limpos e, se possível, reduzidos a um menor volume (amassados).</p>
               </div>
             </div>
 

@@ -67,6 +67,17 @@ class ApiMaps{
 
 	}
 
+	public function formatShortAddress($endereco, $numero){
+
+		//cria string unica com endereço
+		$fomattedAddres = "$endereco";
+
+		if(!empty($numero)) $fomattedAddres .= ", ".$numero;
+
+		return $fomattedAddres;
+
+	}
+
 	public function myUrlEncode($url){
 
 		//caracteres gerados pelo urlencode()

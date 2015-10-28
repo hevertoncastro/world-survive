@@ -1,5 +1,5 @@
 <?php
-/*
+
 //INCLUI CLASSES
 require_once('include/security.inc.php');
 require_once('include/conection.inc.php');
@@ -10,12 +10,14 @@ require_once('class/UsuarioVO.php');
 require_once('class/usuario.class.php');
 require_once('class/CooperativaVO.php');
 require_once('class/cooperativa.class.php');
+require_once('class/FuncionarioVO.php');
+require_once('class/funcionario.class.php');
 require_once('class/LogVO.php');
 require_once('class/log.class.php');
 require_once('class/mapsapi.class.php');
 require_once('include/converDate.php');
 
-//RECUPERA ID DA SESSÃO DO USUÁRIO
+/*//RECUPERA ID DA SESSÃO DO USUÁRIO
 $usuarioID = $_SESSION["login_usuario"]["id"];
 $coletaID = $_SESSION["coleta"]["id"];
 $cooID = $_SESSION["coleta"]["cooperativa"];
@@ -24,45 +26,39 @@ $cooID = $_SESSION["coleta"]["cooperativa"];
 if (empty($coletaID) || empty($cooID)){
   header("Location: login?res=sem_permissao");
   exit;
-}
+}*/
+
+//PEGA AÇÃO POR GET
+$dataColeta = (isset($_GET['d']) && str_length($_GET['d'])>9) ? convertDate($_GET['d']) : date('Y-m-d');
+
+$cooID = "92794301"; //ALTERAR
 
 //INSTANCIA A CLASSE
 $Coleta = new Coleta;
-$oColetaVO = new ColetaVO;
 
 //CARREGA COOPERATIVA
-$oColetas = $Coleta->consultarColeta($coletaID);
+$oColetas = $Coleta->carregarColetas(" AND coo_id='".$cooID."' AND col_data='".$dataColeta."'","col_qtde DESC, col_periodo ='m' DESC, col_periodo DESC","");
 
-//DADOS DA COLETA
-$colData = convertDate($oColetas->getData());
-$colPeriodo = $oColetas->getPeriodo();
-$x = array("m"=>"Manhã", "t"=>"Tarde", "n"=>"Noite");
-$colPeriodo = $x[$colPeriodo];
-
-//DADOS DO USUÁRIO
-$usuLat = $_SESSION["login_usuario"]["latitude"];
-$usuLng = $_SESSION["login_usuario"]["longitude"];
 
 //INSTANCIA A CLASSE
 $Cooperativa = new Cooperativa;
-$oCooperativaVO = new CooperativaVO;
 
 //CARREGA COOPERATIVA
 $oCooperativas = $Cooperativa->consultarCooperativa($cooID);
 
 //DADOS DA COOPERATIVA
 $cooNome = $oCooperativas->getNome();
-$cooTelefone = $oCooperativas->getTelefone();
 $cooLat = number_format($oCooperativas->getLatitude(),6);
 $cooLng = number_format($oCooperativas->getLongitude(),6);
 
 //INSTANCIA CLASSE
 $ApiMaps = new ApiMaps;
 
-//CONVERTE ENDEREÇO PRA STRING ÚNICA
-$cooEnderecoFormatado = $ApiMaps->formatAddress($oCooperativas->getEndereco(), $oCooperativas->getNumero(), $oCooperativas->getCidade(), $oCooperativas->getEstado(), $oCooperativas->getCep());
+//INSTANCIA A CLASSE
+$Usuario = new Usuario;
 
-*/
+//INSTANCIA A CLASSE
+$funcionario = new funcionario;
 ?>
 <!doctype html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
@@ -87,7 +83,7 @@ $cooEnderecoFormatado = $ApiMaps->formatAddress($oCooperativas->getEndereco(), $
         <!--[if lt IE 9]>
             <script src="js/vendor/html5-3.6-respond-1.4.2.min.js"></script>
         <![endif]-->
-        <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDR8Kf7ryhRwXsSB10tk2_MeGP2OnFdBoQ&callback=initMap"></script>
+        <!--<script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDR8Kf7ryhRwXsSB10tk2_MeGP2OnFdBoQ&callback=initMap"></script>-->
     </head>
     <body>
         <!--[if lt IE 8]>
@@ -109,13 +105,21 @@ $cooEnderecoFormatado = $ApiMaps->formatAddress($oCooperativas->getEndereco(), $
 
         <div class="section row form-orders">
 
+          <div class="row col s12 center">
+            <h1 class="coo-title grey-text text-darken-2">Cooperativa de Catadores da Baixada do Glicério</h2>
+          </div>
           <div class="row">
-              <div class="input-field col s12 m6 l6">
+              <div class="input-field col s12 m12 l5">
                 <h2 class="form-title">Agendamentos</h2>
               </div>
-              <div class="input-field col s12 m6 l4 date-orders">
+              <div class="input-field col s6 m6 l4 date-orders">
                 <i class="material-icons prefix icon-datapicker">today</i>
                 <input type="date" name="data" id="data" tabindex="3" class="datepicker">
+              </div>
+              <div class="input-field col s6 m6 l3">
+                 <a href="" class="tooltipped grey-text text-darken-3" data-position="top" data-delay="0" data-tooltip="Dia anterior"><i class="order-icon material-icons">skip_previous</i></a>
+                 <a href="" class="tooltipped grey-text text-darken-3" data-position="top" data-delay="0" data-tooltip="Próximo dia"><i class="order-icon material-icons">skip_next</i></a>
+                 <a href="" class="tooltipped grey-text text-darken-3" data-position="top" data-delay="0" data-tooltip="Imprimir"><i class="order-icon material-icons">print</i></a>
               </div>
             </div>
           <form class="col s12" role="form" onSubmit="return false;">
@@ -130,76 +134,87 @@ $cooEnderecoFormatado = $ApiMaps->formatAddress($oCooperativas->getEndereco(), $
                     <th data-field="periodo">Período</th>
                     <th data-field="endereco">Endereço</th>
                     <th data-field="responsavel">Responsável</th>
+                    <th data-field="responsavel">Ações</th>
                 </tr>
               </thead>
 
               <tbody>
+
+                <?php
+                $qtdes = array(10=>"Menos de 10 kg", 30=>"Entre 10 e 30 kg", 50=>"Entre 30 e 50 kg", 100=>"Entre 50 e 100 kg", 150=>"Mais de 100 kg");
+
+                $coresQtdes = array(10=>"teal-text", 30=>"lime-text text-darken-3", 50=>"amber-text text-accent-4 bold", 100=>"amber-text text-darken-4 bold", 150=>"red-text bold");
+
+                $periodos = array("m"=>"Manhã", "t"=>"Tarde", "n"=>"Noite");
+
+                foreach($oColetas as $col){
+
+                $coletaID = $col->getColetaID();
+
+                $oUsuario = $Usuario->consultarUsuario($col->getUsuarioID());
+
+                //CONVERTE ENDEREÇO PRA STRING ÚNICA
+                $usuEnderecoFormatado = $ApiMaps->formatShortAddress($oUsuario->getEndereco(), $oUsuario->getNumero());
+
+                ?>
                 <tr>
-                  <td>Alvin</td>
-                  <td>30 a 50 kg</td>
-                  <td>Manhã</td>
-                  <td>Endereço</td>
+                  <td><?php echo $oUsuario->getNome() ?></td>
+                  <td class="<?php echo $coresQtdes[$col->getQtde()] ?>"><?php echo $qtdes[$col->getQtde()] ?></td>
+                  <td><?php echo $periodos[$col->getPeriodo()] ?></td>
+                  <td><a class="modal-trigger" href="#mapa<?php echo $coletaID ?>" onclick="console.log('teste');"><?php echo $usuEnderecoFormatado ?> <i class="tiny material-icons">my_location</i></a></td>
                   <td>
-                    <label for="periodo" class="select-label">Em que período?</label>
-                    <select name="periodo" id="periodo" tabindex="4" class="browser-default">
-                      <option value="" selected>Selecione o período</option>
-                      <option value="m">Manhã</option>
-                      <option value="t">Tarde</option>
-                      <option value="n">Noite</option>
+                    <select name="periodo" id="periodo" tabindex="4" class="browser-default funRes" onchange="changeWorker('<?php echo $coletaID ?>',this.value); return false;">
+                      <option value="" selected>Selecione</option>
+                      <?php
+                      $ofuncionarios = $funcionario->carregarFuncionarios("","fun_nome ASC","");
+                      foreach($ofuncionarios as $fun){
+                      ?>
+                      <option value="<?php echo $fun->getFuncionarioID() ?>"<?php if($col->getFuncionarioID() == $fun->getFuncionarioID()) echo ' selected';?>><?php echo $fun->getNome() ?></option>
+                      <?php
+                      }
+                      ?>
                     </select>
                   </td>
-                </tr>
-                <tr>
-                  <td>Alvin</td>
-                  <td>30 a 50 kg</td>
-                  <td>Manhã</td>
-                  <td>Endereço</td>
                   <td>
-                    <label for="periodo" class="select-label">Em que período?</label>
-                    <select name="periodo" id="periodo" tabindex="4" class="browser-default">
-                      <option value="" selected>Selecione o período</option>
-                      <option value="m">Manhã</option>
-                      <option value="t">Tarde</option>
-                      <option value="n">Noite</option>
-                    </select>
+
+                    <!-- Botão excluir -->
+                    <a href="" class="tooltipped" data-position="top" data-delay="0" data-tooltip="excluir"><i class="material-icons red-text text-accent-2">delete</i></a>
+
+                    <!-- Botão detalhes -->
+                    <a href="" class="tooltipped" data-position="top" data-delay="0" data-tooltip="detalhes"><i class="material-icons">zoom_in</i></a>
+
+                    <!-- Botão status -->
+                    <?php
+                    $iconStatus = array('pendente'=>'schedule', 'realizado'=>'done_all', 'cancelado'=>'not_interested');
+                    $corStatus = array('realizado'=>'teal-text', 'pendente'=>'amber-text text-accent-4', 'cancelado'=>'red-text');
+                    ?>
+                    <a href="#" id="db<?php echo $coletaID ?>" class="dropdown-button tooltipped <?php echo $corStatus[$col->getSituacao()]; ?>" data-position="top" data-delay="0" data-tooltip="<?php echo $col->getSituacao() ?>" data-activates="dropdown<?php echo $coletaID ?>"><i class="material-icons"><?php echo $iconStatus[$col->getSituacao()]; ?></i></a>
+
+                    <!-- Ações de status -->
+                    <ul id="dropdown<?php echo $coletaID ?>" class="dropdown-content">
+                      <li><a href="" class="teal-text" onclick="changeStatus('<?php echo $coletaID ?>','realizado'); return false;">Realizado</a></li>
+                      <li class="divider"></li>
+                      <li><a href="" class="amber-text text-accent-4" onclick="changeStatus('<?php echo $coletaID ?>','pendente'); return false;">Pendente</a></li>
+                      <li class="divider"></li>
+                      <li><a href="" class="red-text" onclick="changeStatus('<?php echo $coletaID ?>','cancelado'); return false;">Cancelado</a></li>
+                    </ul>
                   </td>
                 </tr>
-                <tr>
-                  <td>Alvin</td>
-                  <td>30 a 50 kg</td>
-                  <td>Manhã</td>
-                  <td>Endereço</td>
-                  <td>
-                    <label for="periodo" class="select-label">Em que período?</label>
-                    <select name="periodo" id="periodo" tabindex="4" class="browser-default">
-                      <option value="" selected>Selecione o período</option>
-                      <option value="m">Manhã</option>
-                      <option value="t">Tarde</option>
-                      <option value="n">Noite</option>
-                    </select>
-                  </td>
-                </tr>
+                <!-- Modal Structure -->
+                <div id="mapa<?php echo $col->getColetaID() ?>" class="modal">
+                  <div class="modal-content">
+                    <h4><?php echo $oUsuario->getNome() ?></h4>
+                    <p>Pedido realizado em: <?php echo convertDate(substr($col->getInclusao(), 0,10)); ?> às <?php echo substr($col->getInclusao(), 11,14); ?></p>
+                  </div>
+                  <div class="modal-footer">
+                    <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">FECHAR</a>
+                  </div>
+                </div>
+                <?php
+                }
+                ?>
               </tbody>
             </table>
-
-
-
-
-            <!-- Modal Structure -->
-            <div id="modal1" class="modal">
-              <div class="modal-content">
-                <h4>Modal Header</h4>
-                <p>A bunch of text</p>
-              </div>
-              <div class="modal-footer">
-                <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
-              </div>
-            </div>
-
-
-            <div class="row">
-              <div id="map"></div>
-            </div>
           </form>
         </div>
         <footer class="page-footer teal">
@@ -216,7 +231,6 @@ $cooEnderecoFormatado = $ApiMaps->formatAddress($oCooperativas->getEndereco(), $
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
         <script src="js/materialize.min.js"></script>
         <script src="js/plugins.js"></script>
-        <script src="js/main.js"></script>
         <script src="js/login.js"></script>
         <script>
         /*
@@ -282,22 +296,104 @@ $cooEnderecoFormatado = $ApiMaps->formatAddress($oCooperativas->getEndereco(), $
 
         (function ($) {
 
-          $(document).ready(function(){
-            // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
-            $('.modal-trigger').leanModal();
-          });
+            //MUDA O FUNCIONÁRIO DA COLETA
+            changeWorker = function (id, funcionario){
 
-          //DATA PICKER
+              // //ALTERA STATUS NO BANCO POR AJAX POST
+              $.post("include/ajax-worker.php", {
+
+                coletaid: id,
+                worker: funcionario
+
+              }).done(function(data){
+
+                //MOSTRA MENSAGEM DO EVENTO
+                Materialize.toast('Coleta atribuída', 3000)
+
+              })
+              .fail(function(err){
+
+                console.log(err);
+
+              });
+            };
+
+
+            //MUDA OS STATUS DAS COLETAS
+            changeStatus = function (id, future){
+
+              //ALTERA STATUS NO BANCO POR AJAX POST
+              $.post("include/ajax-status.php", {
+
+                coletaid: id,
+                newstatus: future
+
+              }).done(function(data){
+
+                $iconStatus = { pendente: 'schedule', realizado: 'done_all', cancelado: 'not_interested' };
+                $corStatus = { realizado: 'teal-text', pendente: 'amber-text text-accent-4', cancelado: 'red-text' };
+                $msgStatus = { realizado: 'Coleta realizada', pendente: 'Coleta pendente', cancelado: 'Coleta cancelada' };
+
+                //MUDA ÍCONE E COR
+                $('#db'+id).removeClass("teal-text amber-text text-accent-4 red-text");
+                $('#db'+id).addClass($corStatus[future]);
+                $('#db'+id+" > i").html($iconStatus[future]);
+
+                //MOSTRA MENSAGEM DO EVENTO
+                Materialize.toast($msgStatus[future], 3000)
+
+              })
+              .fail(function(err){
+
+                console.log(err);
+
+              });
+            };
+
+
+            $('.button-collapse').sideNav();
+
+            $('.modal-trigger').leanModal({
+                dismissible: true,
+                ready: function() { alert('Ready'); } // Callback for Modal open
+              }
+            );
+
+            $('.dropdown-button').dropdown({
+                belowOrigin: false, // Displays dropdown below the button
+                alignment: 'left' // Displays dropdown with edge aligned to the left of button
+              }
+            );
+
+            //DATA PICKER
             $input = $('.datepicker').pickadate({
               selectMonths: true, // Creates a dropdown to control month
               selectYears: 2 // Creates a dropdown of 15 years to control year
             });
-            data_padrao = "";
+            dataPadrao = "";
             picker = $input.pickadate('picker');
             //FORMATA DATA
             picker.on('close', function() {
-              data_padrao = picker.get('select', 'yyyy/mm/dd');
+              dataPadrao = picker.get('select', 'dd/mm/yyyy');
+              window.location = 'orders?d='+dataPadrao;
             })
+
+            //PEGA VALOR DE GET
+            var getUrl = function getParameterByName(name){
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+              results = regex.exec(location.search);
+              return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+            }
+
+            if(getUrl('d').length > 9){
+
+              var dataAtual = getUrl('d').split("/");
+              picker.set('select', [dataAtual[2], dataAtual[1]-1, dataAtual[0]])
+
+            } else {
+              picker.set('select', new Date())
+            }
 
             //ABRE DATAPICKER PELO ÍCONE
             $(".icon-datapicker").on("click focusout", function(event){
