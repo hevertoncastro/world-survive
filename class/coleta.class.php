@@ -61,21 +61,17 @@ class Coleta extends ColetaVO{
 
 	public function excluirColeta($id) {
 
-		$conexao = MySQL::getMySQL(); 
+		$conexao = MySQL::getMySQL();
 
-		$oColeta = $this->consultarColeta($id);
+		$sql = "UPDATE `worldsurvive`.`coletas` SET ";
+		$sql .=  "`col_situacao` = 'excluido'";
 
-		$sql = 'DELETE FROM coletas WHERE col_id = '.$id;
+		$sql .= " WHERE `coletas`.`col_id` = '".$id."'";
+		//die($sql);
 
-		$retorno = $conexao->excluir($sql);
+		$retorno = $conexao->alterar($sql);
 
-		$conexao->fechaConexao();
-
-		if($retorno){
-			return true;
-		}else{
-			return false;
-		}
+		return $retorno;
 	}
 
 	public function consultarColeta($id){

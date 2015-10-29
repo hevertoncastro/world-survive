@@ -194,3 +194,13 @@ h2.form-title.coleta{
   top: 18px;
   margin: 0 10px;
 }
+.modal-delete{
+  max-width: 500px;
+}
+
+@media print {
+
+
+
+
+}

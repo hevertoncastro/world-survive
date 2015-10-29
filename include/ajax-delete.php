@@ -28,32 +28,26 @@ foreach($_POST as $key => $value) {
   $$key = (isset($key)) ? noInjection($value) : NULL;
 }
 
-//VALIDAÇÕES
-if(empty($worker)){
-	echo "worker";
-	exit;
-}
-
 //INSTANCIA A CLASSE
 $Coleta = new Coleta;
 
 //INSERE NOVO USUÁRIO
-$oAlteraStatus = $Coleta->alterarStatus($coletaid, $newstatus);
+$oExcluirColeta = $Coleta->excluirColeta($coletaid);
 
-if($oAlteraStatus){
+if($oExcluirColeta){
 
 	$Log = new Log;
 	$oLogVO = new LogVO;
 	$oLogVO->setUsuarioID($usuarioID);
 	$oLogVO->setUsuario($usuarioNome);
-	$oLogVO->setAcao('Coleta: Usuário '.$usuarioNome.' alterou a coleta '.$coletaid.' para '.$newstatus);
+	$oLogVO->setAcao('Coleta: Usuário '.$usuarioNome.' excluiu a coleta '.$coletaid);
 	$oLogVO->setPagina($pagina);
 	$oLogVO->setIP(getIP());
 	$oLogVO->setAcesso(0);
 	$oLogVO->setData('Y-m-d H:i:s');
 	$Log->inserirLog($oLogVO);
 
-	echo 'ok';
+	echo "ok";
 	exit;
 
 } else {

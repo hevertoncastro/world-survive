@@ -17,8 +17,8 @@ include("getIp.php");
 
 //RECUPERA ID DA SESSÃO DO USUÁRIO
 session_start();
-$usuarioID = $_SESSION["login_usuario"]["id"];
-$usuarioNome = $_SESSION["login_usuario"]["nome"];
+$usuarioID = $_SESSION["login_cooperativa"]["id"];
+$usuarioNome = $_SESSION["login_cooperativa"]["nome"];
 
 //PEGA NOME DA PÁGINA ATUAL
 $pagina = basename($_SERVER['SCRIPT_NAME']);
@@ -40,14 +40,20 @@ if($oAlteraFuncionario){
 	$oLogVO = new LogVO;
 	$oLogVO->setUsuarioID($usuarioID);
 	$oLogVO->setUsuario($usuarioNome);
-	$oLogVO->setAcao('Coleta: Usuário '.$usuarioNome.' atribuiu a coleta '.$coletaid.' para o funcionário '.$worker);
+	if(!empty($worker)){
+		$msg = "ok";
+		$oLogVO->setAcao('Coleta: Usuário '.$usuarioNome.' atribuiu a coleta '.$coletaid.' para o funcionário '.$worker);
+	} else {
+		$msg = "noworker";
+		$oLogVO->setAcao('Coleta: Usuário '.$usuarioNome.' removeu a atribuição de funcionário da coleta '.$coletaid);
+	}
 	$oLogVO->setPagina($pagina);
 	$oLogVO->setIP(getIP());
 	$oLogVO->setAcesso(0);
 	$oLogVO->setData('Y-m-d H:i:s');
 	$Log->inserirLog($oLogVO);
 
-	echo 'ok';
+	echo $msg;
 	exit;
 
 } else {

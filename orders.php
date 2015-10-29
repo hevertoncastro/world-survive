@@ -1,7 +1,6 @@
 <?php
-
 //INCLUI CLASSES
-require_once('include/security.inc.php');
+require_once('include/securityadm.inc.php');
 require_once('include/conection.inc.php');
 require_once('class/MySQL.class.php');
 require_once('class/ColetaVO.php');
@@ -17,27 +16,26 @@ require_once('class/log.class.php');
 require_once('class/mapsapi.class.php');
 require_once('include/converDate.php');
 
-/*//RECUPERA ID DA SESSÃO DO USUÁRIO
-$usuarioID = $_SESSION["login_usuario"]["id"];
-$coletaID = $_SESSION["coleta"]["id"];
-$cooID = $_SESSION["coleta"]["cooperativa"];
+//RECUPERA ID DA SESSÃO DO USUÁRIO
+$cooID = $_SESSION["login_cooperativa"]["id"];
 
 //VERIFICA SE TEM PERMISSÃO
-if (empty($coletaID) || empty($cooID)){
-  header("Location: login?res=sem_permissao");
+if (empty($cooID) || empty($cooID)){
+  header("Location: adm?res=sem_permissao");
   exit;
-}*/
+}
 
 //PEGA AÇÃO POR GET
-$dataColeta = (isset($_GET['d']) && str_length($_GET['d'])>9) ? convertDate($_GET['d']) : date('Y-m-d');
-
-$cooID = "92794301"; //ALTERAR
+$dataColeta = (isset($_GET['d']) && strlen($_GET['d'])>9) ? convertDate($_GET['d']) : date('Y-m-d');
+//BOTÃO PRÓXIMO DIA E DIA ANTERIOR
+$beforeDay = convertDate(date('Y-m-d', strtotime("-1 day", strtotime($dataColeta))));
+$afterDay = convertDate(date('Y-m-d', strtotime("+1 day", strtotime($dataColeta))));
 
 //INSTANCIA A CLASSE
 $Coleta = new Coleta;
 
 //CARREGA COOPERATIVA
-$oColetas = $Coleta->carregarColetas(" AND coo_id='".$cooID."' AND col_data='".$dataColeta."'","col_qtde DESC, col_periodo ='m' DESC, col_periodo DESC","");
+$oColetas = $Coleta->carregarColetas(" AND col_situacao!='excluido' AND coo_id='".$cooID."' AND col_data='".$dataColeta."'","col_qtde DESC, col_periodo ='m' DESC, col_periodo DESC","");
 
 
 //INSTANCIA A CLASSE
@@ -83,7 +81,6 @@ $funcionario = new funcionario;
         <!--[if lt IE 9]>
             <script src="js/vendor/html5-3.6-respond-1.4.2.min.js"></script>
         <![endif]-->
-        <!--<script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDR8Kf7ryhRwXsSB10tk2_MeGP2OnFdBoQ&callback=initMap"></script>-->
     </head>
     <body>
         <!--[if lt IE 8]>
@@ -117,9 +114,9 @@ $funcionario = new funcionario;
                 <input type="date" name="data" id="data" tabindex="3" class="datepicker">
               </div>
               <div class="input-field col s6 m6 l3">
-                 <a href="" class="tooltipped grey-text text-darken-3" data-position="top" data-delay="0" data-tooltip="Dia anterior"><i class="order-icon material-icons">skip_previous</i></a>
-                 <a href="" class="tooltipped grey-text text-darken-3" data-position="top" data-delay="0" data-tooltip="Próximo dia"><i class="order-icon material-icons">skip_next</i></a>
-                 <a href="" class="tooltipped grey-text text-darken-3" data-position="top" data-delay="0" data-tooltip="Imprimir"><i class="order-icon material-icons">print</i></a>
+                 <a href="orders?d=<?php echo $beforeDay ?>" class="tooltipped grey-text text-darken-3" data-position="top" data-delay="0" data-tooltip="Dia anterior"><i class="order-icon material-icons">skip_previous</i></a>
+                 <a href="orders?d=<?php echo $afterDay ?>" class="tooltipped grey-text text-darken-3" data-position="top" data-delay="0" data-tooltip="Próximo dia"><i class="order-icon material-icons">skip_next</i></a>
+                 <a href="" class="tooltipped grey-text text-darken-3" data-position="top" data-delay="0" data-tooltip="Imprimir" onclick="window.print();return false;"><i class="order-icon material-icons">print</i></a>
               </div>
             </div>
           <form class="col s12" role="form" onSubmit="return false;">
@@ -147,23 +144,25 @@ $funcionario = new funcionario;
 
                 $periodos = array("m"=>"Manhã", "t"=>"Tarde", "n"=>"Noite");
 
-                foreach($oColetas as $col){
+                if($oColetas){
+                  foreach($oColetas as $col){
 
-                $coletaID = $col->getColetaID();
+                  $coletaID = $col->getColetaID();
 
-                $oUsuario = $Usuario->consultarUsuario($col->getUsuarioID());
+                  $oUsuario = $Usuario->consultarUsuario($col->getUsuarioID());
 
-                //CONVERTE ENDEREÇO PRA STRING ÚNICA
-                $usuEnderecoFormatado = $ApiMaps->formatShortAddress($oUsuario->getEndereco(), $oUsuario->getNumero());
+                  //CONVERTE ENDEREÇO PRA STRING ÚNICA
+                  $usuEnderecoFormatado = $ApiMaps->formatShortAddress($oUsuario->getEndereco(), $oUsuario->getNumero());
 
                 ?>
                 <tr>
                   <td><?php echo $oUsuario->getNome() ?></td>
                   <td class="<?php echo $coresQtdes[$col->getQtde()] ?>"><?php echo $qtdes[$col->getQtde()] ?></td>
                   <td><?php echo $periodos[$col->getPeriodo()] ?></td>
-                  <td><a class="modal-trigger" href="#mapa<?php echo $coletaID ?>" onclick="console.log('teste');"><?php echo $usuEnderecoFormatado ?> <i class="tiny material-icons">my_location</i></a></td>
+                  <td><a class="modal-trigger" href="#mapa<?php echo $coletaID ?>"><?php echo $usuEnderecoFormatado ?> <i class="tiny material-icons">my_location</i></a></td>
                   <td>
-                    <select name="periodo" id="periodo" tabindex="4" class="browser-default funRes" onchange="changeWorker('<?php echo $coletaID ?>',this.value); return false;">
+                    <select name="worker" id="worker<?php echo $coletaID ?>" tabindex="4" class="browser-default funRes" onchange="changeWorker('<?php echo $coletaID ?>',this.value); return false;"<?php if ($col->getSituacao()=="realizado" || $col->getSituacao()=="cancelado") echo " disabled"; ?>>
+
                       <option value="" selected>Selecione</option>
                       <?php
                       $ofuncionarios = $funcionario->carregarFuncionarios("","fun_nome ASC","");
@@ -178,7 +177,7 @@ $funcionario = new funcionario;
                   <td>
 
                     <!-- Botão excluir -->
-                    <a href="" class="tooltipped" data-position="top" data-delay="0" data-tooltip="excluir"><i class="material-icons red-text text-accent-2">delete</i></a>
+                    <a href="#modalDelete" class="tooltipped modal-trigger" data-position="top" data-delay="0" data-tooltip="excluir" onclick="javascript: document.getElementById('deleteid').value = '<?php echo $coletaID ?>'"><i class="material-icons red-text text-accent-2">delete</i></a>
 
                     <!-- Botão detalhes -->
                     <a href="" class="tooltipped" data-position="top" data-delay="0" data-tooltip="detalhes"><i class="material-icons">zoom_in</i></a>
@@ -207,14 +206,33 @@ $funcionario = new funcionario;
                     <p>Pedido realizado em: <?php echo convertDate(substr($col->getInclusao(), 0,10)); ?> às <?php echo substr($col->getInclusao(), 11,14); ?></p>
                   </div>
                   <div class="modal-footer">
-                    <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">FECHAR</a>
+                    <a href="" class=" modal-action modal-close waves-effect waves-green btn-flat">FECHAR</a>
                   </div>
                 </div>
+                <?php
+                  }
+                } else {
+                ?>
+                <tr>
+                  <td colspan="6" class="center">Nenhuma coleta agendada para esta data.</td>
+                </tr>
                 <?php
                 }
                 ?>
               </tbody>
             </table>
+            <!-- Modal Structure -->
+            <div id="modalDelete" class="modal modal-delete">
+              <div class="modal-content">
+                <h4>Tem certeza?</h4>
+                <p>Todos os dados deste agendamento serão excluídos.</p>
+              </div>
+              <div class="modal-footer">
+                <a href="" class="modal-action modal-close waves-effect waves-red btn" onclick="confirmDelete(document.getElementById('deleteid').value); return false;">Confirmar</a>
+                <a href="" class="modal-action modal-close waves-effect waves-green btn-flat" onclick="return false;">Cancelar</a>
+              </div>
+            </div>
+            <input type="hidden" name="deleteid" id="deleteid">
           </form>
         </div>
         <footer class="page-footer teal">
@@ -232,58 +250,6 @@ $funcionario = new funcionario;
         <script src="js/materialize.min.js"></script>
         <script src="js/plugins.js"></script>
         <script src="js/login.js"></script>
-        <script>
-        /*
-        var map;
-        function initMap() {
-          var origin = {lat: <?php echo $usuLat ?>, lng: <?php echo $usuLng ?>};
-          var destination = {lat: <?php echo $cooLat ?>, lng: <?php echo $cooLng ?>};
-
-          var map = new google.maps.Map(document.getElementById('map'), {
-            center: origin,
-            scrollwheel: false,
-            zoom: 8
-          });
-
-          var directionsDisplay = new google.maps.DirectionsRenderer({
-            map: map,
-            suppressMarkers : true,
-            suppressInfoWindows: false,
-          });
-
-          var home = 'img/home.png';
-          var beachMarker = new google.maps.Marker({
-            position: origin,
-            map: map,
-            icon: home
-          });
-
-          var recycle = 'img/recycle.png';
-          var beachMarker = new google.maps.Marker({
-            position: destination,
-            map: map,
-            icon: recycle
-          });
-
-
-          // Set destination, origin and travel mode.
-          var request = {
-            destination: destination,
-            origin: origin,
-            travelMode: google.maps.TravelMode.DRIVING
-          };
-
-          // Pass the directions request to the directions service.
-          var directionsService = new google.maps.DirectionsService();
-          directionsService.route(request, function(response, status) {
-            if (status == google.maps.DirectionsStatus.OK) {
-              // Display the route on the map.
-              directionsDisplay.setDirections(response);
-            }
-          });
-        }
-        */
-        </script>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <script>
@@ -297,7 +263,7 @@ $funcionario = new funcionario;
         (function ($) {
 
             //MUDA O FUNCIONÁRIO DA COLETA
-            changeWorker = function (id, funcionario){
+            changeWorker = function(id, funcionario){
 
               // //ALTERA STATUS NO BANCO POR AJAX POST
               $.post("include/ajax-worker.php", {
@@ -307,8 +273,16 @@ $funcionario = new funcionario;
 
               }).done(function(data){
 
-                //MOSTRA MENSAGEM DO EVENTO
-                Materialize.toast('Coleta atribuída', 3000)
+                //VERIFICA SE FOI SELECIONADO UM FUNCIONÁRIO
+                if(data == "noworker"){
+
+                  //MOSTRA MENSAGEM DO EVENTO
+                  Materialize.toast('Coleta atribuída', 3000);
+                //SE NÃO HOUVE ERRO
+                } else if(data == "ok"){
+                  //MOSTRA MENSAGEM DO EVENTO
+                  Materialize.toast('Coleta atribuída', 3000);
+                }
 
               })
               .fail(function(err){
@@ -320,27 +294,76 @@ $funcionario = new funcionario;
 
 
             //MUDA OS STATUS DAS COLETAS
-            changeStatus = function (id, future){
+            changeStatus = function(id, future){
 
               //ALTERA STATUS NO BANCO POR AJAX POST
               $.post("include/ajax-status.php", {
 
                 coletaid: id,
-                newstatus: future
+                newstatus: future,
+                worker: $("#worker"+id).val()
 
               }).done(function(data){
 
-                $iconStatus = { pendente: 'schedule', realizado: 'done_all', cancelado: 'not_interested' };
-                $corStatus = { realizado: 'teal-text', pendente: 'amber-text text-accent-4', cancelado: 'red-text' };
-                $msgStatus = { realizado: 'Coleta realizada', pendente: 'Coleta pendente', cancelado: 'Coleta cancelada' };
+                //VERIFICA SE FOI SELECIONADO UM FUNCIONÁRIO
+                if(data == "worker"){
 
-                //MUDA ÍCONE E COR
-                $('#db'+id).removeClass("teal-text amber-text text-accent-4 red-text");
-                $('#db'+id).addClass($corStatus[future]);
-                $('#db'+id+" > i").html($iconStatus[future]);
+                  //MOSTRA MENSAGEM DO EVENTO
+                  Materialize.toast("Selecione um funcionário", 3000);
+                  $("#worker"+id).focus();
 
-                //MOSTRA MENSAGEM DO EVENTO
-                Materialize.toast($msgStatus[future], 3000)
+                //SE NÃO HOUVE ERRO
+                } else if(data == "ok"){
+
+                  //SE MUDOU PARA REALIZADO OU CANCELADO BLOQUEIA FUNCIONÁRIO
+                  if(future == "realizado" || future == "cancelado"){
+                    $("#worker"+id).attr('disabled', 'disabled');
+                  } else if(future == "pendente"){
+                    $("#worker"+id).removeAttr('disabled');
+                  }
+
+                  $iconStatus = { pendente: 'schedule', realizado: 'done_all', cancelado: 'not_interested' };
+                  $corStatus = { realizado: 'teal-text', pendente: 'amber-text text-accent-4', cancelado: 'red-text' };
+                  $msgStatus = { realizado: 'Coleta realizada', pendente: 'Coleta pendente', cancelado: 'Coleta cancelada' };
+
+                  //MUDA ÍCONE E COR
+                  $('#db'+id).removeClass("teal-text amber-text text-accent-4 red-text");
+                  $('#db'+id).addClass($corStatus[future]);
+                  $('#db'+id+" > i").html($iconStatus[future]);
+
+                  //MOSTRA MENSAGEM DO EVENTO
+                  Materialize.toast($msgStatus[future], 3000);
+                }
+
+              })
+              .fail(function(err){
+
+                console.log(err);
+
+              });
+            };
+
+            //DELETA AGENDAMENTO
+            confirmDelete = function(id){
+
+              //EXCLUI NO BANCO POR AJAX POST
+              $.post("include/ajax-delete.php", {
+
+                coletaid: id
+
+              }).done(function(data){
+
+                //SE NÃO HOUVE ERRO
+                if(data == "ok"){
+
+                  //MOSTRA MENSAGEM DO EVENTO
+                  Materialize.toast('Agendamento excluído',1500);
+
+                  setTimeout(function(){
+                    location.reload();
+                  }, 1500); //esconde o aviso depois um tempo
+
+                }
 
               })
               .fail(function(err){
@@ -354,8 +377,7 @@ $funcionario = new funcionario;
             $('.button-collapse').sideNav();
 
             $('.modal-trigger').leanModal({
-                dismissible: true,
-                ready: function() { alert('Ready'); } // Callback for Modal open
+                dismissible: true
               }
             );
 
