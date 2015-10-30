@@ -199,8 +199,31 @@ h2.form-title.coleta{
 }
 
 @media print {
-
-
-
+  *{
+    background: transparent !important;
+    color: #000 !important;
+    text-shadow: none !important;
+    filter:none !important;
+    -ms-filter: none !important;
+  }
+  h1.coo-title{
+    font-size: 24px;
+  }
+  h2.form-title{
+    font-size: 18px;
+  }
+  table{
+    font-size: 12px;
+  }
+  table td, table th{
+    padding: 12px 20px;
+    border: 1px solid #000;
+  }
+  .no-print, .picker__holder, .modal, .material-tooltip, nav, footer, video, audio, object, embed  {
+      display:none;
+  }
+  a{
+    text-decoration: none;
+  }
 
 }

@@ -63,10 +63,10 @@ class Coleta extends ColetaVO{
 
 		$conexao = MySQL::getMySQL();
 
-		$sql = "UPDATE `worldsurvive`.`coletas` SET ";
-		$sql .=  "`col_situacao` = 'excluido'";
+		$sql = "UPDATE coletas SET ";
+		$sql .=  "col_situacao = 'excluido'";
 
-		$sql .= " WHERE `coletas`.`col_id` = '".$id."'";
+		$sql .= " WHERE col_id = '".$id."'";
 		//die($sql);
 
 		$retorno = $conexao->alterar($sql);
@@ -150,10 +150,10 @@ class Coleta extends ColetaVO{
 
 		$conexao = MySQL::getMySQL();
 
-		$sql = "UPDATE `worldsurvive`.`coletas` SET ";
-		$sql .=  "`col_situacao` = '".$status."'";
+		$sql = "UPDATE coletas SET ";
+		$sql .=  "col_situacao = '".$status."'";
 
-		$sql .= " WHERE `coletas`.`col_id` = '".$id."'";
+		$sql .= " WHERE col_id = '".$id."'";
 		//die($sql);
 
 		$retorno = $conexao->alterar($sql);
@@ -165,10 +165,10 @@ class Coleta extends ColetaVO{
 
 		$conexao = MySQL::getMySQL();
 
-		$sql = "UPDATE `worldsurvive`.`coletas` SET ";
-		$sql .=  "`fun_id` = '".$funcionario."'";
+		$sql = "UPDATE coletas SET ";
+		$sql .=  "fun_id = '".$funcionario."'";
 
-		$sql .= " WHERE `coletas`.`col_id` = '".$id."'";
+		$sql .= " WHERE col_id = '".$id."'";
 		//die($sql);
 
 		$retorno = $conexao->alterar($sql);

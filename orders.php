@@ -113,7 +113,7 @@ $funcionario = new funcionario;
                 <i class="material-icons prefix icon-datapicker">today</i>
                 <input type="date" name="data" id="data" tabindex="3" class="datepicker">
               </div>
-              <div class="input-field col s6 m6 l3">
+              <div class="input-field col s6 m6 l3 no-print">
                  <a href="orders?d=<?php echo $beforeDay ?>" class="tooltipped grey-text text-darken-3" data-position="top" data-delay="0" data-tooltip="Dia anterior"><i class="order-icon material-icons">skip_previous</i></a>
                  <a href="orders?d=<?php echo $afterDay ?>" class="tooltipped grey-text text-darken-3" data-position="top" data-delay="0" data-tooltip="Próximo dia"><i class="order-icon material-icons">skip_next</i></a>
                  <a href="" class="tooltipped grey-text text-darken-3" data-position="top" data-delay="0" data-tooltip="Imprimir" onclick="window.print();return false;"><i class="order-icon material-icons">print</i></a>
@@ -131,7 +131,7 @@ $funcionario = new funcionario;
                     <th data-field="periodo">Período</th>
                     <th data-field="endereco">Endereço</th>
                     <th data-field="responsavel">Responsável</th>
-                    <th data-field="responsavel">Ações</th>
+                    <th data-field="responsavel" class="no-print">Ações</th>
                 </tr>
               </thead>
 
@@ -159,7 +159,7 @@ $funcionario = new funcionario;
                   <td><?php echo $oUsuario->getNome() ?></td>
                   <td class="<?php echo $coresQtdes[$col->getQtde()] ?>"><?php echo $qtdes[$col->getQtde()] ?></td>
                   <td><?php echo $periodos[$col->getPeriodo()] ?></td>
-                  <td><a class="modal-trigger" href="#mapa<?php echo $coletaID ?>"><?php echo $usuEnderecoFormatado ?> <i class="tiny material-icons">my_location</i></a></td>
+                  <td><a class="modal-trigger" href="#mapa<?php echo $coletaID ?>"><?php echo $usuEnderecoFormatado ?> <i class="tiny material-icons no-print">my_location</i></a></td>
                   <td>
                     <select name="worker" id="worker<?php echo $coletaID ?>" tabindex="4" class="browser-default funRes" onchange="changeWorker('<?php echo $coletaID ?>',this.value); return false;"<?php if ($col->getSituacao()=="realizado" || $col->getSituacao()=="cancelado") echo " disabled"; ?>>
 
@@ -174,7 +174,7 @@ $funcionario = new funcionario;
                       ?>
                     </select>
                   </td>
-                  <td>
+                  <td class="no-print">
 
                     <!-- Botão excluir -->
                     <a href="#modalDelete" class="tooltipped modal-trigger" data-position="top" data-delay="0" data-tooltip="excluir" onclick="javascript: document.getElementById('deleteid').value = '<?php echo $coletaID ?>'"><i class="material-icons red-text text-accent-2">delete</i></a>
