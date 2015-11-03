@@ -136,8 +136,8 @@ class Usuario extends UsuarioVO{
 			$usuario->setBairro($consulta[0]['usu_bairro']);
 			$usuario->setCidade($consulta[0]['usu_cidade']);
 			$usuario->setEstado($consulta[0]['usu_estado']);
-			$usuario->getLatitude($consulta[0]['usu_lat']);
-			$usuario->getLongitude($consulta[0]['usu_lng']);
+			$usuario->setLatitude($consulta[0]['usu_lat']);
+			$usuario->setLongitude($consulta[0]['usu_lng']);
 			$usuario->setCelular($consulta[0]['usu_celular']);
 			$usuario->setInclusao($consulta[0]['usu_inclusao']);
 			$usuario->setAtivo($consulta[0]['usu_ativo']);

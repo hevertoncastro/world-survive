@@ -48,6 +48,7 @@ $oCooperativas = $Cooperativa->consultarCooperativa($cooID);
 $cooNome = $oCooperativas->getNome();
 $cooLat = number_format($oCooperativas->getLatitude(),6);
 $cooLng = number_format($oCooperativas->getLongitude(),6);
+$cooCoord = $cooLat."%2C".$cooLng;
 
 //INSTANCIA CLASSE
 $ApiMaps = new ApiMaps;
@@ -154,12 +155,18 @@ $funcionario = new funcionario;
                   //CONVERTE ENDEREÇO PRA STRING ÚNICA
                   $usuEnderecoFormatado = $ApiMaps->formatShortAddress($oUsuario->getEndereco(), $oUsuario->getNumero());
 
+                  //CONVERTE ENDEREÇO PRA STRING ÚNICA
+                  $usuEnderecoCompleto = $ApiMaps->formatAddress($oUsuario->getEndereco(), $oUsuario->getNumero(), $oUsuario->getCidade(), $oUsuario->getEstado(), $oUsuario->getCep());
+
                 ?>
                 <tr>
                   <td><?php echo $oUsuario->getNome() ?></td>
                   <td class="<?php echo $coresQtdes[$col->getQtde()] ?>"><?php echo $qtdes[$col->getQtde()] ?></td>
                   <td><?php echo $periodos[$col->getPeriodo()] ?></td>
-                  <td><a class="modal-trigger" href="#mapa<?php echo $coletaID ?>"><?php echo $usuEnderecoFormatado ?> <i class="tiny material-icons no-print">my_location</i></a></td>
+                  <?php
+                  $usuCoord = $oUsuario->getLatitude()."%2C".$oUsuario->getLongitude();
+                  ?>
+                  <td><a href="" onclick="changeMap('<?php echo $cooCoord ?>','<?php echo $usuCoord ?>','<?php echo $usuEnderecoCompleto ?>'); return false;"><?php echo $usuEnderecoFormatado ?> <i class="tiny material-icons no-print">my_location</i></a></td>
                   <td>
                     <select name="worker" id="worker<?php echo $coletaID ?>" tabindex="4" class="browser-default funRes" onchange="changeWorker('<?php echo $coletaID ?>',this.value); return false;"<?php if ($col->getSituacao()=="realizado" || $col->getSituacao()=="cancelado") echo " disabled"; ?>>
 
@@ -175,12 +182,11 @@ $funcionario = new funcionario;
                     </select>
                   </td>
                   <td class="no-print">
-
                     <!-- Botão excluir -->
                     <a href="#modalDelete" class="tooltipped modal-trigger" data-position="top" data-delay="0" data-tooltip="excluir" onclick="javascript: document.getElementById('deleteid').value = '<?php echo $coletaID ?>'"><i class="material-icons red-text text-accent-2">delete</i></a>
 
                     <!-- Botão detalhes -->
-                    <a href="" class="tooltipped" data-position="top" data-delay="0" data-tooltip="detalhes"><i class="material-icons">zoom_in</i></a>
+                    <a href="" class="tooltipped" data-position="top" data-delay="0" data-tooltip="detalhes" onclick="changeMap('<?php echo $cooCoord ?>','<?php echo $usuCoord ?>','<?php echo $usuEnderecoCompleto ?>'); return false;"><i class="material-icons">zoom_in</i></a>
 
                     <!-- Botão status -->
                     <?php
@@ -199,16 +205,6 @@ $funcionario = new funcionario;
                     </ul>
                   </td>
                 </tr>
-                <!-- Modal Structure -->
-                <div id="mapa<?php echo $col->getColetaID() ?>" class="modal">
-                  <div class="modal-content">
-                    <h4><?php echo $oUsuario->getNome() ?></h4>
-                    <p>Pedido realizado em: <?php echo convertDate(substr($col->getInclusao(), 0,10)); ?> às <?php echo substr($col->getInclusao(), 11,14); ?></p>
-                  </div>
-                  <div class="modal-footer">
-                    <a href="" class=" modal-action modal-close waves-effect waves-green btn-flat">FECHAR</a>
-                  </div>
-                </div>
                 <?php
                   }
                 } else {
@@ -221,7 +217,7 @@ $funcionario = new funcionario;
                 ?>
               </tbody>
             </table>
-            <!-- Modal Structure -->
+            <!-- Modal Delete -->
             <div id="modalDelete" class="modal modal-delete">
               <div class="modal-content">
                 <h4>Tem certeza?</h4>
@@ -233,6 +229,19 @@ $funcionario = new funcionario;
               </div>
             </div>
             <input type="hidden" name="deleteid" id="deleteid">
+
+            <!-- Modal Directions -->
+            <div id="modalDirections" class="modal" style="height: 100%;">
+              <div class="modal-content">
+                <h4><?php if(isset($oUsuario)) echo $oUsuario->getNome() ?></h4>
+                <!-- <p>Pedido realizado em: <?php //echo convertDate(substr($col->getInclusao(), 0,10)); ?> às <?php //echo substr($col->getInclusao(), 11,14); ?></p><br> -->
+                <p id="address"></p>
+                <iframe id="directions" width="100%" height="100%" frameborder="0" style="border:0; min-height: 300px;" src="" allowfullscreen></iframe> 
+              </div>
+              <div class="modal-footer">
+                <a href="" class=" modal-action modal-close waves-effect waves-green btn-flat" onclick="return false;">FECHAR</a>
+              </div>
+            </div>
           </form>
         </div>
         <footer class="page-footer teal">
@@ -261,6 +270,23 @@ $funcionario = new funcionario;
         ga('create','UA-XXXXX-X','auto');ga('send','pageview');*/
 
         (function ($) {
+
+            //MUDA AS COORDENADAS DO MAPA
+            changeMap = function(cooCoord, usuCoord, address){
+
+              //gera mapa com direções
+              $("#directions").attr('src', 'https://www.google.com/maps/embed/v1/directions?origin='+cooCoord+'&destination='+usuCoord+'&key=AIzaSyDR8Kf7ryhRwXsSB10tk2_MeGP2OnFdBoQ');
+
+              //gera endereço no modal
+              $("#address").html(address);
+
+              //abre modal
+              $('#modalDirections').openModal({
+                dismissible: true,
+                complete: function() { $("#directions").attr('src', ''); } // limpa mapa
+              });
+
+            };
 
             //MUDA O FUNCIONÁRIO DA COLETA
             changeWorker = function(id, funcionario){
@@ -373,13 +399,13 @@ $funcionario = new funcionario;
               });
             };
 
-
-            $('.button-collapse').sideNav();
-
             $('.modal-trigger').leanModal({
                 dismissible: true
               }
             );
+
+
+            $('.button-collapse').sideNav();
 
             $('.dropdown-button').dropdown({
                 belowOrigin: false, // Displays dropdown below the button
