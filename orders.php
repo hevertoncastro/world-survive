@@ -104,7 +104,7 @@ $funcionario = new funcionario;
         <div class="section row form-orders">
 
           <div class="row col s12 center">
-            <h1 class="coo-title grey-text text-darken-2">Cooperativa de Catadores da Baixada do Glicério</h2>
+            <h1 class="coo-title grey-text text-darken-2"><?php echo $cooNome ?></h2>
           </div>
           <div class="row">
               <div class="input-field col s12 m12 l5">
@@ -173,10 +173,12 @@ $funcionario = new funcionario;
                       <option value="" selected>Selecione</option>
                       <?php
                       $ofuncionarios = $funcionario->carregarFuncionarios("","fun_nome ASC","");
-                      foreach($ofuncionarios as $fun){
+                      if($ofuncionarios){
+                        foreach($ofuncionarios as $fun){
                       ?>
                       <option value="<?php echo $fun->getFuncionarioID() ?>"<?php if($col->getFuncionarioID() == $fun->getFuncionarioID()) echo ' selected';?>><?php echo $fun->getNome() ?></option>
                       <?php
+                        }
                       }
                       ?>
                     </select>

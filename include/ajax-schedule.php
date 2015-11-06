@@ -156,12 +156,12 @@ if($oCooperativas){
 	$oColetaVO->setColetaID($id);
 	$oColetaVO->setUsuarioID($usuarioID);
 	$oColetaVO->setCooperativaID($betterDistance);
-	$oColetaVO->setFuncionarioID('11111111'); //ALTERAR POSTERIORMENTE
+	$oColetaVO->setFuncionarioID(''); //ALTERAR POSTERIORMENTE
 	$oColetaVO->setData($data_padrao);
 	$oColetaVO->setPeriodo($periodo);
 	$oColetaVO->setQtde($qtde);
 	$oColetaVO->setInclusao(date('Y-m-d H:i:s'));
-	$oColetaVO->setSituacao(1);
+	$oColetaVO->setSituacao('pendente');
 
 	//INSERE NOVO USUÁRIO
 	$oInsereColeta = $Coleta->inserirColeta($oColetaVO);
