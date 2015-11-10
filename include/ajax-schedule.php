@@ -110,28 +110,44 @@ if($oUsuario){
 	$Cooperativa = new Cooperativa;
 	$oCooperativaVO = new CooperativaVO;
 
-	//CARREGA COOPERATIVAS
-	$oCooperativas = $Cooperativa->carregarCooperativas(" AND coo_ativo='1'","coo_nome ASC","");
-
+	//RAIO DE BUSCA
+	$modifiers = array("0.01", "0.03", "0.05", "0.07", "0.1", "0.2", "0.3", "0.5", "0.7", "0.9");
 	$distances = "";
 
-	//LOOP EM TODAS COOPERATIVAS
-	foreach($oCooperativas as $coo){
+	//LOOP ATÉ ENCONTRAR COOPERATIVA
+	while(true){
 
-		//COORDENADAS DO ENDEREÇO DA COOPERATIVAS	
-		$cooEndereco = number_format($coo->getLatitude(),6).",".number_format($coo->getLongitude(),6);
+		//LOOP NOS MODIFICADORES A PARTIR DO MAIS PERTO
+		foreach($modifiers as $modifier){
 
-		//CHAMA FUNÇÃO QUE CALCULA DISTÂNCIA E TEMPO
-		$distance = $ApiMaps->getDistance($cooEndereco, $usuEndereco);
+			//WHERE EM COORDENADAS COM BASE NO MODIFICADOR
+			$search = " AND (coo_lat >= '".($LatLng['lat']-$modifier)."' AND coo_lat <= '".($LatLng['lat']+$modifier)."') AND (coo_lng >= '".($LatLng['lng']-$modifier)."' AND coo_lng <= '".($LatLng['lng']+$modifier)."')";
 
-		if($distance){
-			//POPULA ARRAY COM TEMPO E ID DE CADA COOPERATIVA
-			$distances[$coo->getCooperativaID()] = $distance['durationValue'];
+			//CARREGA COOPERATIVAS
+			$oCooperativas = $Cooperativa->carregarCooperativas(" AND coo_ativo='1'".$search,"coo_nome ASC","");
+
+			//LOOP EM TODAS COOPERATIVAS NESSE RAIO
+			if($oCooperativas){ foreach($oCooperativas as $coo){
+
+				//COORDENADAS DO ENDEREÇO DA COOPERATIVAS
+				$cooEndereco = number_format($coo->getLatitude(),6).",".number_format($coo->getLongitude(),6);
+
+				//CHAMA FUNÇÃO QUE CALCULA DISTÂNCIA E TEMPO
+				$distance = $ApiMaps->getDistance($cooEndereco, $usuEndereco);
+
+				if($distance){
+					//POPULA ARRAY COM TEMPO E ID DE CADA COOPERATIVA
+					$distances[$coo->getCooperativaID()] = $distance['durationValue'];
+				}
+
+			}}
+
+			//SE ENCONTRAR COOPERATIVAS SAIR DO LOOP
+			if (!empty($distances)) break 2;
 		}
-
 	}
 
-	//This will return the first index that has the minimum value in the array
+	//RETORNA A POSIÇÃO DA MENOR DISTÂNCIA DO ARRAY
 	$betterDistance = array_search(min($distances), $distances);
 
 	// ====================================================== //

@@ -4,13 +4,43 @@ header ('Content-type: text/html; charset=UTF-8');
 $lat = "-23.558874";
 $lng = "-46.502254";
 
-$modifier = "0.01";
+$modifiers = array("0.01", "0.03", "0.05", "0.07", "0.1", "0.2", "0.3", "0.5", "0.7", "0.9");
+
+$i = 0;
+while(true){
+	echo $i++;
+	echo "<br>";
+
+	foreach($modifiers as $modifier){
+
+		if($i>20) break 2;
+
+	}
+}
+
+
+
+echo "oi";
+exit;
+
+// $modifier = "0.01";
 // $modifier = "0.03";
-// $modifier = "0.04";
-// $modifier = "0.06";
+// $modifier = "0.05";
+// $modifier = "0.07";
 // $modifier = "0.1";
 // $modifier = "0.2";
 // $modifier = "0.3";
+
+
+// $modifier = array("0.01", "0.03", "0.05", "0.07", "0.1", "0.2", "0.3");
+
+// foreach($modifier as $mod){
+
+// 	echo $mod;
+// 	echo "<br>";
+
+// }
+// exit;
 
 // echo $lat;
 // echo "<br> ---------<br>";
@@ -25,9 +55,28 @@ $modifier = "0.01";
 
 // // echo $lat.",".$lng;
 
-$varLat = "-23.568874";
-$varLng = "-46.502254";
+// $varLat = "-23.568874";
+// $varLng = "-46.502254";
 
+// $search = " AND (coo_lat >= '".($lat-$modifier)."' AND coo_lat <= '".($lat+$modifier)."')
+// 	 AND (coo_lng >= '".($lng-$modifier)."' AND coo_lng <= '".($lng+$modifier)."')";
+
+// echo $search;
+// exit;
+/*
+$distances = "";
+
+$distances[1234] = "10000";
+
+if (!empty($distances)) {
+    echo "tem";
+} else {
+    echo 'O array está vazio';
+}
+
+exit;
+*/
+/*
 if(
 	$varLat >= $lat-$modifier && $varLat <= $lat+$modifier
 	&&
@@ -117,5 +166,5 @@ if($oCooperativa) echo "Cooperativa ".$nome." inserida com sucesso";
 exit;
 
 //=========================//
-
+*/
 ?>
