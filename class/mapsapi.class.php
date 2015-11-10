@@ -78,6 +78,17 @@ class ApiMaps{
 
 	}
 
+	public function formatMapsAddress($cidade, $estado, $cep){
+
+		//cria string unica com endereço
+		if(!empty($cidade)) $fomattedAddres = $cidade.",";
+		if(!empty($estado)) $fomattedAddres .= $estado.",";
+		if(!empty($cep)) $fomattedAddres .= $cep;
+
+		return $fomattedAddres;
+
+	}
+
 	public function myUrlEncode($url){
 
 		//caracteres gerados pelo urlencode()

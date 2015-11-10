@@ -90,6 +90,16 @@ $enderecoFormatado = $ApiMaps->formatAddress($endereco, $numero, $cidade, $estad
 //CHAMA FUNÇÃO QUE RETORNA LATITUDE E LONGITUDE
 $LatLng = $ApiMaps->getLatLng($enderecoFormatado);
 
+//CASO NÃO ENCONTRE, PROCURA COORDENADAS APROXIMADAS
+if(!$LatLng){
+
+	//CONVERTE ENDEREÇO PRA STRING ÚNICA
+	$enderecoFormatado = $ApiMaps->formatMapsAddress($cidade, $estado, $cep);
+
+	//CHAMA FUNÇÃO QUE RETORNA LATITUDE E LONGITUDE
+	$LatLng = $ApiMaps->getLatLng($enderecoFormatado);
+}
+
 //ACESSA ARRAY COM LATITUDE E LONGITUDE
 $oUsuarioVO->setLatitude($LatLng['lat']);
 $oUsuarioVO->setLongitude($LatLng['lng']);
