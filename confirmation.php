@@ -1,6 +1,6 @@
 <?php
 //INCLUI CLASSES
-require_once('include/security.inc.php');
+require_once('include/securityshare.inc.php');
 require_once('include/conection.inc.php');
 require_once('class/MySQL.class.php');
 require_once('class/ColetaVO.php');
