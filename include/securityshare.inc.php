@@ -6,13 +6,13 @@ session_start();
 include("getIp.php");
 
 //VERIFICA SE TEM PERMISSÃO
-if (empty($_SESSION["login_cooperativa"]["id"]) || empty($_SESSION["login_cooperativa"]["nome"])){
+if (empty($_SESSION["login_usuario"]["id"]) || empty($_SESSION["login_usuario"]["nome"])){
 	header("Location: index");
 	exit;
 }
 
 //VERIFICA SE O IP É VÁLIDO
-if($_SESSION["login_cooperativa"]["ip"] != getIP()){
+if($_SESSION["login_usuario"]["ip"] != getIP()){
 	header("Location: index");
 	exit;
 }

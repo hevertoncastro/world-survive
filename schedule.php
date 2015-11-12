@@ -190,234 +190,233 @@ if(isset($usuarioID) && !empty($usuarioID)){
         <script src="js/plugins.js"></script>
         <script src="js/main.js"></script>
         <script src="js/login.js"></script>
-
-        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <script>
-            /*(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-            e.src='//www.google-analytics.com/analytics.js';
-            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-            ga('create','UA-XXXXX-X','auto');ga('send','pageview');*/
+        (function ($) {
 
-          (function ($) {
+          var today = new Date();
+          var dd = today.getDate();
+          var mm = today.getMonth(); //January is 0!
+          var yyyy = today.getFullYear();
 
-            var today = new Date();
-            var dd = today.getDate();
-            var mm = today.getMonth(); //January is 0!
-            var yyyy = today.getFullYear();
+          //DATA PICKER
+          $input = $('.datepicker').pickadate({
+            min: new Date(yyyy,mm,dd),
+            selectMonths: true, // Creates a dropdown to control month
+            selectYears: 2 // Creates a dropdown of 15 years to control year
+          });
 
-            //DATA PICKER
-            $input = $('.datepicker').pickadate({
-              min: new Date(yyyy,mm,dd),
-              selectMonths: true, // Creates a dropdown to control month
-              selectYears: 2 // Creates a dropdown of 15 years to control year
-            });
+          data_padrao = "";
+          picker = $input.pickadate('picker');
+          //FORMATA DATA
+          picker.on('close', function() {
+            data_padrao = picker.get('select', 'yyyy/mm/dd');
+          })
 
-            data_padrao = "";
-            picker = $input.pickadate('picker');
-            //FORMATA DATA
-            picker.on('close', function() {
-              data_padrao = picker.get('select', 'yyyy/mm/dd');
-            })
+          //ABRE DATAPICKER PELO ÍCONE
+          $(".icon-datapicker").on("click focusout", function(event){
+            picker.open(false);
+            event.stopPropagation();
+          });
 
-            //ABRE DATAPICKER PELO ÍCONE
-            $(".icon-datapicker").on("click focusout", function(event){
-              picker.open(false);
-              event.stopPropagation();
-            });
+          //BUSCA DADOS DO CEP
+          $("#cep").on({
+            keyup: function(e) {
 
-            //BUSCA DADOS DO CEP
-            $("#cep").on({
-              keyup: function(e) {
+              cep = $(this).val();
 
-                cep = $(this).val();
+              if(cep.length===8){
 
-                if(cep.length===8){
+                //FAZ REQUISIÇÃO NA API DE CEP
+                $.ajax({
+                  url: "http://api.postmon.com.br/v1/cep/"+cep,
+                  type: "get",
+                  dataType: "json"
 
-                  //FAZ REQUISIÇÃO NA API DE CEP
-                  $.ajax({
-                    url: "http://api.postmon.com.br/v1/cep/"+cep,
-                    type: "get",
-                    dataType: "json"
+                }).done(function(data){
 
-                  }).done(function(data){
-
-                    $("#numero").val("");
-                    $("#complemento").val("");
-                    $("#bairro").val("");
+                  $("#numero").val("");
+                  $("#complemento").val("");
+                  $("#bairro").val("");
 
 
-                    $("#endereco").val(data.logradouro).addClass('active');
-                    $("#bairro").val(data.bairro).addClass('active');
-                    $("#estado").val(data.estado).addClass('active');
-                    $("#cidade").val(data.cidade).addClass('active');
+                  $("#endereco").val(data.logradouro).addClass('active');
+                  $("#bairro").val(data.bairro).addClass('active');
+                  $("#estado").val(data.estado).addClass('active');
+                  $("#cidade").val(data.cidade).addClass('active');
 
-                    $("#endereco + label, #bairro + label, #estado + label, #cidade + label").addClass('active');
+                  $("#endereco + label, #bairro + label, #estado + label, #cidade + label").addClass('active');
 
-                    $("#numero").focus();
+                  $("#numero").focus();
 
 
-                  })
-                  .fail(function(err){
+                })
+                .fail(function(err){
 
-                    console.log(err);
+                  console.log(err);
 
-                  });
-                }
-
-              },
-              keydown: function(e) {
-
-                // Allow: backspace, delete, tab, escape and enter
-                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110]) !== -1 ||
-                     // Allow: Ctrl+A
-                    (e.keyCode == 65 && e.ctrlKey === true) ||
-                     // Allow: Ctrl+C
-                    (e.keyCode == 67 && e.ctrlKey === true) ||
-                     // Allow: Ctrl+X
-                    (e.keyCode == 88 && e.ctrlKey === true) ||
-                     // Allow: home, end, left, right
-                    (e.keyCode >= 35 && e.keyCode <= 39)) {
-                         // let it happen, don't do anything
-                         return;
-                }
-                // Ensure that it is a number and stop the keypress
-                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-                    e.preventDefault();
-                }
-
+                });
               }
 
-            });
+            },
+            keydown: function(e) {
 
-            //AVISOS
-            $('.btn-send').click(function() {
+              // Allow: backspace, delete, tab, escape and enter
+              if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110]) !== -1 ||
+                   // Allow: Ctrl+A
+                  (e.keyCode == 65 && e.ctrlKey === true) ||
+                   // Allow: Ctrl+C
+                  (e.keyCode == 67 && e.ctrlKey === true) ||
+                   // Allow: Ctrl+X
+                  (e.keyCode == 88 && e.ctrlKey === true) ||
+                   // Allow: home, end, left, right
+                  (e.keyCode >= 35 && e.keyCode <= 39)) {
+                       // let it happen, don't do anything
+                       return;
+              }
+              // Ensure that it is a number and stop the keypress
+              if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                  e.preventDefault();
+              }
 
-               //DESATIVA BOTÃO PRA EVITAR CLIQUE DUPLO
-               $('.btn-send').attr('disabled', true);
-               $('.btn-send').addClass("disabled");
+            }
 
-               //MOSTRA LOADER E ESCONDE TEXTO
-               $(".loader").show();
-               $(".btn-login-text").hide();
+          });
 
-               //OCULTA DIV DE DO AVISO
-               $(".response").hide();
+          //AVISOS
+          $('.btn-send').click(function() {
 
-               //SERIALIZA DADOS
-               datastring = $("#formulario").serialize();
-               datastring += '&data_padrao=' + data_padrao;
+             //DESATIVA BOTÃO PRA EVITAR CLIQUE DUPLO
+             $('.btn-send').attr('disabled', true);
+             $('.btn-send').addClass("disabled");
 
-               //PEGA VALORES DOS CAMPOS OBRIGATÓRIOS
-               var materiais = $("#materiais").val();
-               var qtde = $("#qtde").val();
-               var data = $("#data").val();
-               var periodo = $("#periodo").val();
-               var cep = $("#cep").val();
-               var endereco = $("#endereco").val();
-               var estado = $("#estado").val();
-               var cidade = $("#cidade").val();
+             //MOSTRA LOADER E ESCONDE TEXTO
+             $(".loader").show();
+             $(".btn-login-text").hide();
 
-               //MOSTRA MENSAGENS DE AGUARDE PARA USUÁRIO
-               if(materiais != "" & qtde != "" & data != "" & periodo != "" & cep != "" & endereco != "" & estado != "" & cidade != ""){
+             //OCULTA DIV DE DO AVISO
+             $(".response").hide();
 
-                function mostraMensagem(msg){
-                  message = msg;
-                  $(".response").removeClass("success");
-                  $(".response").addClass("warning");
-                  $(".response p").html(message);
-                  $(".response").show("slow");
-                }
+             //SERIALIZA DADOS
+             datastring = $("#formulario").serialize();
+             datastring += '&data_padrao=' + data_padrao;
 
-                //MOSTRA MENSAGEM DE ESPERA PARA O USUÁRIO
-                mostraMensagem("Procurando cooperativas na sua região...");
-               }
+             //PEGA VALORES DOS CAMPOS OBRIGATÓRIOS
+             var materiais = $("#materiais").val();
+             var qtde = $("#qtde").val();
+             var data = $("#data").val();
+             var periodo = $("#periodo").val();
+             var cep = $("#cep").val();
+             var endereco = $("#endereco").val();
+             var estado = $("#estado").val();
+             var cidade = $("#cidade").val();
 
-               //FAZ REQUISIÇÃO NO ARQUIVO PHP
-               $.ajax({
-                  url: "include/ajax-schedule.php",
-                  type: "post",
-                  data: datastring,
-                  dataType: "HTML"
+             //MOSTRA MENSAGENS DE AGUARDE PARA USUÁRIO
+             if(materiais != "" & qtde != "" & data != "" & periodo != "" & cep != "" & endereco != "" & estado != "" & cidade != ""){
 
-               }).done(function(data){
+              function mostraMensagem(msg){
+                message = msg;
+                $(".response").removeClass("success");
+                $(".response").addClass("warning");
+                $(".response p").html(message);
+                $(".response").show("slow");
+              }
 
-                    //ATIVA BOTÃO NOVAMENTE
-                    $('.btn-send').attr('disabled', false);
-                    $('.btn-send').removeClass("disabled");
+              //MOSTRA MENSAGEM DE ESPERA PARA O USUÁRIO
+              mostraMensagem("Procurando cooperativas na sua região...");
+             }
 
-                    //ESCONDE LOADER E MOSTRA TEXTO
-                    $(".loader").hide();
-                    $(".btn-login-text").show();
+             //FAZ REQUISIÇÃO NO ARQUIVO PHP
+             $.ajax({
+                url: "include/ajax-schedule.php",
+                type: "post",
+                data: datastring,
+                dataType: "HTML"
 
-                    //VERIFICAÇÃO DOS CAMPOS DE RETORNO DO PHP
-                    if(data == "materiais"){
+             }).done(function(data){
 
-                      returnError("material_1", "Informe os <strong>materias que possui</strong>.");
+                  //ATIVA BOTÃO NOVAMENTE
+                  $('.btn-send').attr('disabled', false);
+                  $('.btn-send').removeClass("disabled");
 
-                    } else if(data == "qtde"){
+                  //ESCONDE LOADER E MOSTRA TEXTO
+                  $(".loader").hide();
+                  $(".btn-login-text").show();
 
-                      returnError("qtde", "Informe a <strong>quantidade aproximada</strong> em kilos.");
+                  //VERIFICAÇÃO DOS CAMPOS DE RETORNO DO PHP
+                  if(data == "materiais"){
 
-                    } else if(data == "data"){
+                    returnError("material_1", "Informe os <strong>materias que possui</strong>.");
 
-                      returnError("data", "Informe a <strong>data de retirada</strong>.");
+                  } else if(data == "qtde"){
 
-                    } else if(data == "periodo"){
+                    returnError("qtde", "Informe a <strong>quantidade aproximada</strong> em kilos.");
 
-                      returnError("periodo", "Informe o <strong>período</strong> para retirada.");
+                  } else if(data == "data"){
 
-                    } else if(data == "cep"){
+                    returnError("data", "Informe a <strong>data de retirada</strong>.");
 
-                      returnError("cep", "Informe seu <strong>CEP</strong>.");
+                  } else if(data == "periodo"){
 
-                    } else if(data == "endereco"){
+                    returnError("periodo", "Informe o <strong>período</strong> para retirada.");
 
-                      returnError("endereco", "Informe seu <strong>endereço</strong>.");
+                  } else if(data == "cep"){
 
-                    } else if(data == "numero"){
+                    returnError("cep", "Informe seu <strong>CEP</strong>.");
 
-                      returnError("numero", "Informe o <strong>número do seu endereço</strong>.");
+                  } else if(data == "endereco"){
 
-                    } else if(data == "cidade"){
+                    returnError("endereco", "Informe seu <strong>endereço</strong>.");
 
-                      returnError("cidade", "Informe sua <strong>cidade</strong>.");
+                  } else if(data == "numero"){
 
-                    } else if(data == "ok"){
+                    returnError("numero", "Informe o <strong>número do seu endereço</strong>.");
 
-                      $("rect").attr("fill", "#FFF");
-                      $(".loader").show();
-                      $(".btn-login-text").hide();
+                  } else if(data == "cidade"){
 
-                      $(".response").removeClass("warning");
-                      $(".response").addClass("success");
+                    returnError("cidade", "Informe sua <strong>cidade</strong>.");
 
-                      msg = "Cooperativa mais próxima selecionada...";
+                  } else if(data == "ok"){
 
-                      $(".response").show("slow");
-                      $(".response p").html(msg);
+                    $("rect").attr("fill", "#FFF");
+                    $(".loader").show();
+                    $(".btn-login-text").hide();
 
-                      setTimeout(function(){
-                        window.location = 'confirmation';
-                      }, 1500); //esconde o aviso depois um tempo
+                    $(".response").removeClass("warning");
+                    $(".response").addClass("success");
 
-                    } else {
-                      console.log(data);
-                      returnError("cidade", "Erro de requisição, tente novamente mais tarde.");
-                    }
+                    msg = "Cooperativa mais próxima selecionada...";
 
-               })
-               .fail(function(err){
+                    $(".response").show("slow");
+                    $(".response p").html(msg);
 
-                  //MOSTRA MSG DE ERRO
-                  console.log(data, err);
-                  returnError("cidade", "Erro de requisição, tente novamente mais tarde.");
+                    setTimeout(function(){
+                      window.location = 'confirmation';
+                    }, 1500); //esconde o aviso depois um tempo
 
-               });
-            });
+                  } else {
+                    console.log(data);
+                    returnError("cidade", "Erro de requisição, tente novamente mais tarde.");
+                  }
 
-          }(jQuery));
+             })
+             .fail(function(err){
+
+                //MOSTRA MSG DE ERRO
+                console.log(data, err);
+                returnError("cidade", "Erro de requisição, tente novamente mais tarde.");
+
+             });
+          });
+
+        }(jQuery));
+        //Google Analytics
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-33868689-7', 'auto');
+        ga('send', 'pageview');
         </script>
     </body>
 </html>
